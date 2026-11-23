@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#bdbdbd">
+  <title>Insane Revenue Service</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="desktop" aria-label="Insane Revenue Service desktop">
+  <div class="desktop-heading"><div class="desktop-title">INSANE REVENUE SERVICE</div></div>
+
+  <a class="desktop-item music" href="https://insanerevenueservice.bandcamp.com/album/irs" target="_blank" rel="noopener">
+    <img src="assets/folder-music.png" alt=""><span class="item-label">Music</span>
+  </a>
+  <a class="desktop-item shows" href="https://www.bandsintown.com/a/15676331" target="_blank" rel="noopener">
+    <img src="assets/folder-shows.png" alt=""><span class="item-label">Shows</span>
+  </a>
+  <a class="desktop-item instagram" href="https://www.instagram.com/insanerevenueservice/" target="_blank" rel="noopener">
+    <img src="assets/folder-instagram.png" alt=""><span class="item-label">Instagram</span>
+  </a>
+  <a class="desktop-item speed" href="https://insaneservice.github.io/Card" target="_blank" rel="noopener">
+    <img src="assets/speed-dial.png" alt=""><span class="item-label">Speed Dial</span>
+  </a>
+  <a class="desktop-item book" href="mailto:Bookings@momo-records.com?subject=Booking%20enquiry">
+    <img src="assets/email.png" alt=""><span class="item-label">Book a show</span>
+  </a>
+  <button class="desktop-item ie-shortcut" id="openIE" type="button">
+    <img src="assets/internet-explorer.png" alt=""><span class="item-label">Internet Explorer</span>
+  </button>
+  <button class="desktop-item winamp-shortcut" id="openPlayer" type="button">
+    <img src="assets/winamp.png" alt=""><span class="item-label">Audio terminal</span>
+  </button>
+  <button class="desktop-item john-shortcut" id="openJohn" type="button">
+    <img src="assets/john.png" alt=""><span class="item-label">John de Mol</span>
+  </button>
+  <button class="desktop-item train-shortcut" id="startTrain" type="button">
+    <img src="assets/jonkotrain.png" alt=""><span class="item-label">jonkotrain</span>
+  </button>
+  <button class="desktop-item virus-shortcut" id="openVirus" type="button">
+    <span class="unknown-file">?</span><span class="item-label">҉̷V̷I̷R̷U̷S̷.exe</span>
+  </button>
+
+  <div id="trainLayer" aria-hidden="true">
+    <img id="trainImage" src="assets/train.png" alt="">
+  </div>
+
+  <section class="window video-window" id="videoWindow" hidden>
+    <header class="window-title"><span>INTERNET EXPLORER — VIDEO TRANSMISSION</span><button class="close" data-close="videoWindow">×</button></header>
+    <div class="ie-toolbar"><span>←</span><span>→</span><span>↻</span><div>http://www.youtube.com/</div></div>
+    <div class="window-body">
+      <div class="video-frame" id="videoFrame">
+        <button id="playVideo" class="play-video"><span>▶</span><br>INITIATE TRANSMISSION</button>
+      </div>
+      <p class="window-note">AUTHORIZED VIEWING ONLY · CLICK TO PLAY</p>
+      <p class="video-fallback">If the embedded transmission is blocked, <a href="https://www.youtube.com/watch?v=3NJEFZtLr9I" target="_blank" rel="noopener">open it directly on YouTube</a>.</p>
+    </div>
+  </section>
+
+  <section class="window player-window" id="playerWindow" aria-label="IRS audio player">
+    <header class="window-title"><span>DEPARTMENT OF THE TREASURY · AUDIO DIVISION</span><button class="close" data-close="playerWindow">×</button></header>
+    <div class="winamp-shell">
+      <div class="player-top">
+        <div class="seal">IRS<br><small>1997</small></div>
+        <div class="display">
+          <div class="display-label">AUTHORIZED AUDIO RECORDS</div>
+          <div class="track-name" id="trackName">NO RECORD SELECTED</div>
+          <div class="time-row"><span id="elapsed">00:00</span><span id="duration">00:00</span></div>
+          <input id="seek" type="range" min="0" max="100" value="0" aria-label="Track position">
+        </div>
+      </div>
+      <div class="transport">
+        <button id="prev" title="Previous">|◀</button><button id="play" title="Play">▶</button><button id="pause" title="Pause">Ⅱ</button><button id="stop" title="Stop">■</button><button id="next" title="Next">▶|</button>
+        <label class="volume">AUDIO COMPLIANCE <input id="volume" type="range" min="0" max="1" step=".01" value=".7"></label>
+      </div>
+      <div class="playlist-head">AUTHORIZED PLAYLIST <span>FILE NO. 0001–----</span></div>
+      <ol id="playlist" class="playlist"><li class="empty-playlist">NO AUDIO RECORDS ON FILE</li></ol>
+      <div class="player-foot">FREQUENCY AUDIT: <span class="equalizer">▂ ▅ ▃ ▆ ▄ ▇ ▂ ▅ ▃ ▆</span></div>
+      <audio id="audio" preload="metadata"></audio>
+    </div>
+  </section>
+
+  <section class="window snake-window" id="snakeWindow" hidden>
+    <header class="window-title"><span>SNAKE 97 — RECREATIONAL SOFTWARE</span><button class="close" data-close="snakeWindow">×</button></header>
+    <div class="snake-shell">
+      <div class="snake-score">SCORE: <span id="snakeScore">0</span> <span id="snakeStatus">READY</span></div>
+      <canvas id="snakeCanvas" width="400" height="300" aria-label="Snake game"></canvas>
+      <div class="snake-controls"><button id="snakeStart">START / RESTART</button><button id="snakePause">PAUSE</button></div>
+      <div class="snake-help">ARROW KEYS / WASD TO MOVE · SPACE TO PAUSE</div>
+      <div class="touch-arrows"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div>
+    </div>
+  </section>
+
+  <section class="john-overlay" id="johnOverlay" hidden aria-label="John de Mol messages"></section>
+
+  <section class="virus-overlay" id="virusOverlay" hidden>
+    <div class="virus-header">CRITICAL SYSTEM ERROR</div>
+    <div class="virus-copy">YOUR COMPUTER HAS BEEN COMPROMISED.<br>THIS IS A SIMULATED RETRO VIRUS.</div>
+    <div id="virusPopups"></div>
+    <button id="virusReload">RELOAD PAGE TO RESTORE SYSTEM</button>
+  </section>
+
+  <nav class="start-menu" id="startMenu" hidden aria-label="Start menu">
+    <div class="menu-banner"><span>INSANE<br>REVENUE<br>SERVICE</span></div>
+    <div class="menu-content">
+      <div class="menu-heading">IRS DOCUMENT ARCHIVE</div>
+      <a href="https://www.irs.gov/pub/irs-pdf/f1040s1.pdf" target="_blank" rel="noopener"><img src="assets/Document.png" alt="">Form 1040 Schedule 1</a>
+      <a href="https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf" target="_blank" rel="noopener"><img src="assets/Document.png" alt="">Form 1040 Schedule 1-A</a>
+      <a href="https://www.irs.gov/pub/irs-pdf/f1040s2.pdf" target="_blank" rel="noopener"><img src="assets/Document.png" alt="">Form 1040 Schedule 2</a>
+      <a href="https://www.irs.gov/pub/irs-pdf/f1040s3.pdf" target="_blank" rel="noopener"><img src="assets/Document.png" alt="">Form 1040 Schedule 3</a>
+      <a href="https://www.irs.gov/pub/irs-pdf/i1040gi.pdf" target="_blank" rel="noopener"><img src="assets/Document.png" alt="">Instructions for Form 1040</a>
+      <div class="menu-heading">INTERNET & ENTERTAINMENT</div>
+      <a href="https://www.youtube.com/watch?v=K1y5akduh74" target="_blank" rel="noopener"><span class="menu-symbol">▶</span>YouTube</a>
+      <button id="openSnake"><img src="assets/Snake.png" alt="">Snake 97</button>
+      <div class="menu-heading">PUBLICATIONS</div>
+      <!-- ZINE SLOT: add the PDF to assets/zines/, then set enabled to true in script.js -->
+      <a id="zineMenuLink" class="zine-link" href="#" download hidden><img src="assets/Document.png" alt=""><span id="zineMenuLabel">Zine download</span></a>
+    </div>
+  </nav>
+
+  <footer class="taskbar" id="taskbar">
+    <button id="startButton" class="start-button"><span class="windows-flag"><i></i><i></i><i></i><i></i></span>Start</button>
+    <div class="bar-divider"></div>
+    <button class="quick-icon" id="quickMail" aria-label="Book a show" title="Book a show">✉</button>
+    <button class="quick-icon ie" id="quickIE" aria-label="Internet Explorer" title="Internet Explorer">e</button>
+    <button class="quick-icon" id="quickPlayer" aria-label="Audio terminal" title="Audio terminal">♫</button>
+    <div class="taskbar-spacer"></div><div class="tray">IRS · EST. 1997</div>
+  </footer>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

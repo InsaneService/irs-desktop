@@ -1,0 +1,289 @@
+const $ = id => document.getElementById(id);
+const desktop = $("desktop");
+const startButton = $("startButton"), startMenu = $("startMenu");
+
+startButton.addEventListener("click", e => { e.stopPropagation(); startMenu.hidden = !startMenu.hidden; });
+document.addEventListener("click", e => { if (!startMenu.hidden && !startMenu.contains(e.target) && e.target !== startButton) startMenu.hidden = true; });
+
+function showWindow(id) {
+  const win = $(id);
+  win.hidden = false;
+  startMenu.hidden = true;
+  bringToFront(win);
+}
+function bringToFront(el) {
+  const windows = [...document.querySelectorAll(".window")];
+  const max = Math.max(30, ...windows.map(w => Number(getComputedStyle(w).zIndex) || 30));
+  el.style.zIndex = max + 1;
+}
+$("openIE").addEventListener("click", () => showWindow("videoWindow"));
+$("quickIE").addEventListener("click", () => showWindow("videoWindow"));
+$("openPlayer").addEventListener("click", () => showWindow("playerWindow"));
+$("quickPlayer").addEventListener("click", () => showWindow("playerWindow"));
+$("quickMail").addEventListener("click", () => location.href = "mailto:Bookings@momo-records.com?subject=Booking%20enquiry");
+$("openSnake").addEventListener("click", () => showWindow("snakeWindow"));
+document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => $(b.dataset.close).hidden = true));
+
+// Windows can be dragged by their title bars.
+document.querySelectorAll(".window").forEach(win => {
+  const bar = win.querySelector(".window-title");
+  let drag = null;
+  bar.addEventListener("pointerdown", e => {
+    if (e.target.closest("button")) return;
+    const r = win.getBoundingClientRect();
+    win.style.transform = "none";
+    win.style.left = (r.left - desktop.getBoundingClientRect().left) + "px";
+    win.style.top = (r.top - desktop.getBoundingClientRect().top) + "px";
+    drag = {x:e.clientX, y:e.clientY, left:parseFloat(win.style.left), top:parseFloat(win.style.top)};
+    bar.setPointerCapture(e.pointerId);
+    bringToFront(win);
+  });
+  bar.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const d = desktop.getBoundingClientRect();
+    const maxX = Math.max(0, d.width - win.offsetWidth);
+    const maxY = Math.max(0, d.height - $("taskbar").offsetHeight - 35);
+    win.style.left = Math.max(0, Math.min(maxX, drag.left + e.clientX - drag.x)) + "px";
+    win.style.top = Math.max(0, Math.min(maxY, drag.top + e.clientY - drag.y)) + "px";
+  });
+  bar.addEventListener("pointerup", () => drag = null);
+  bar.addEventListener("pointercancel", () => drag = null);
+});
+
+// Desktop shortcuts: drag with the old desktop-icon feel. A drag doesn't activate the shortcut.
+document.querySelectorAll(".desktop-item").forEach((el, i) => {
+  const key = "irs-position-" + (el.classList[1] || i);
+  try {
+    const saved = JSON.parse(localStorage.getItem(key));
+    if (saved && innerWidth > 650) { el.style.left = saved.x + "%"; el.style.top = saved.y + "%"; }
+  } catch {}
+  let drag = null;
+  el.addEventListener("pointerdown", e => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const r = el.getBoundingClientRect(), d = desktop.getBoundingClientRect();
+    drag = {id:e.pointerId, dx:e.clientX-r.left, dy:e.clientY-r.top, sx:e.clientX, sy:e.clientY, moved:false, left:r.left-d.left, top:r.top-d.top};
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener("pointermove", e => {
+    if (!drag || drag.id !== e.pointerId) return;
+    if (Math.hypot(e.clientX-drag.sx, e.clientY-drag.sy) > 6) drag.moved = true;
+    if (!drag.moved) return;
+    const d = desktop.getBoundingClientRect();
+    const x = Math.max(0, Math.min(d.width-el.offsetWidth, e.clientX-d.left-drag.dx));
+    const y = Math.max(0, Math.min(d.height-$("taskbar").offsetHeight-el.offsetHeight, e.clientY-d.top-drag.dy));
+    el.style.left = x/d.width*100 + "%"; el.style.top = y/d.height*100 + "%";
+  });
+  el.addEventListener("pointerup", () => {
+    if (!drag) return;
+    if (drag.moved) {
+      localStorage.setItem(key, JSON.stringify({x:parseFloat(el.style.left), y:parseFloat(el.style.top)}));
+      el.dataset.dragged = "1";
+      setTimeout(() => delete el.dataset.dragged, 120);
+    }
+    drag = null;
+  });
+  el.addEventListener("click", e => {
+    if (el.dataset.dragged === "1") { e.preventDefault(); e.stopImmediatePropagation(); }
+  });
+});
+
+// Cursor echo: a small, short-lived trail of Windows-style arrow pointers.
+let lastEcho = 0;
+desktop.addEventListener("pointermove", e => {
+  if (e.pointerType === "touch") return;
+  const now = performance.now();
+  if (now - lastEcho < 42) return;
+  lastEcho = now;
+  const r = desktop.getBoundingClientRect();
+  const echo = document.createElement("span");
+  echo.className = "cursor-echo";
+  echo.textContent = "➤";
+  echo.style.left = (e.clientX-r.left) + "px";
+  echo.style.top = (e.clientY-r.top) + "px";
+  desktop.append(echo);
+  requestAnimationFrame(() => echo.classList.add("fade"));
+  setTimeout(() => echo.remove(), 430);
+});
+
+// Video only embeds after a deliberate click. Some browsers/configurations may still block YouTube embeds.
+$("playVideo").addEventListener("click", () => {
+  $("videoFrame").innerHTML = '<iframe src="https://www.youtube.com/embed/3NJEFZtLr9I?autoplay=1" title="Insane Revenue Service video" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+});
+
+// Winamp-style local audio player. Add your MP3s to assets/music/ and list them here.
+const TRACKS = [
+  // { title: "Take It", artist: "Flowered Up", src: "assets/music/Track01.mp3" }
+]; { title: "There's No Other Way", artist: "Blur", src: "assets/music/Track02.mp3" }
+]; { title: "Right Here Right Now", artist: "Jesus Jones", src: "assets/music/Track03.mp3" }
+]; { title: "Fools Gold", artist: "The Stone Roses", src: "assets/music/Track04.mp3" }
+]; { title: "Movin' On Up", artist: "Primal Scream", src: "assets/music/Track05.mp3" }
+]; { title: "Bitter Sweet Symphony", artist: "The Verve", src: "assets/music/Track06.mp3" }
+]; { title: "IRS", artist: "Insane Revenue Service", src: "assets/music/IRS.mp3" }
+]; { title: "International Bright Young Thing", artist: "Jesus Jones"", src: "assets/music/Track07.mp3" }
+]; { title: "Praise You", artist: "Fatboy Slim", src: "assets/music/Track08.mp3" }
+]; { title: "Loaded", artist: "Primal Scream", src: "assets/music/Track09.mp3" }
+]; 
+const audio = $("audio"), playlist = $("playlist");
+let current = -1;
+function time(s) { if (!Number.isFinite(s)) return "00:00"; return String(Math.floor(s/60)).padStart(2,"0")+":"+String(Math.floor(s%60)).padStart(2,"0"); }
+function renderPlaylist() {
+  playlist.innerHTML = "";
+  if (!TRACKS.length) { playlist.innerHTML = '<li class="empty-playlist">NO AUDIO RECORDS ON FILE — TRACKLIST PENDING</li>'; return; }
+  TRACKS.forEach((t,i) => {
+    const li = document.createElement("li");
+    li.textContent = String(i+1).padStart(2,"0")+"  "+t.title+" — "+(t.artist||"IRS");
+    li.className = i===current ? "active" : "";
+    li.addEventListener("click", () => loadTrack(i,true));
+    playlist.append(li);
+  });
+}
+function loadTrack(i, play=false) {
+  if (!TRACKS.length) return;
+  current = (i+TRACKS.length)%TRACKS.length;
+  audio.src = TRACKS[current].src;
+  $("trackName").textContent = TRACKS[current].title.toUpperCase();
+  renderPlaylist();
+  if (play) audio.play().catch(() => {});
+}
+$("play").addEventListener("click", () => {
+  if (!TRACKS.length) { $("trackName").textContent = "NO RECORDS — ADD MP3 FILES IN SCRIPT.JS"; return; }
+  if (current < 0) loadTrack(0);
+  audio.play().catch(() => {});
+});
+$("pause").addEventListener("click", () => audio.pause());
+$("stop").addEventListener("click", () => { audio.pause(); audio.currentTime=0; });
+$("prev").addEventListener("click", () => loadTrack(current-1,true));
+$("next").addEventListener("click", () => loadTrack(current+1,true));
+$("volume").addEventListener("input", e => audio.volume = Number(e.target.value));
+$("seek").addEventListener("input", e => { if (audio.duration) audio.currentTime = audio.duration*Number(e.target.value)/100; });
+audio.addEventListener("timeupdate", () => {
+  $("elapsed").textContent=time(audio.currentTime); $("duration").textContent=time(audio.duration);
+  if (audio.duration) $("seek").value=audio.currentTime/audio.duration*100;
+});
+audio.addEventListener("ended", () => loadTrack(current+1,true));
+renderPlaylist(); audio.volume=.7;
+
+// Snake 97 — self-contained canvas game, no network needed.
+const canvas = $("snakeCanvas"), ctx = canvas.getContext("2d");
+const cell = 20, cols = canvas.width/cell, rows = canvas.height/cell;
+let snake, food, direction, nextDirection, score, snakeTimer, running = false, paused = false;
+function randomFood() {
+  let p;
+  do { p={x:Math.floor(Math.random()*cols),y:Math.floor(Math.random()*rows)}; }
+  while (snake.some(s=>s.x===p.x && s.y===p.y));
+  return p;
+}
+function drawSnake() {
+  ctx.fillStyle="#101a0d"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="#25351d"; ctx.lineWidth=.5;
+  for(let x=0;x<=canvas.width;x+=cell){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
+  for(let y=0;y<=canvas.height;y+=cell){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+  if (food) { ctx.fillStyle="#d8df48";ctx.fillRect(food.x*cell+3,food.y*cell+3,cell-6,cell-6); }
+  (snake||[]).forEach((p,i)=>{ctx.fillStyle=i===0?"#d7e58a":"#83a94a";ctx.fillRect(p.x*cell+1,p.y*cell+1,cell-2,cell-2);});
+  if (!running) {
+    ctx.fillStyle="#fff";ctx.textAlign="center";ctx.font="bold 17px Courier New";
+    ctx.fillText(score===undefined?"SNAKE 97": "GAME OVER",canvas.width/2,canvas.height/2);
+    ctx.font="12px Courier New";ctx.fillText("PRESS START / RESTART",canvas.width/2,canvas.height/2+23);
+  } else if (paused) {
+    ctx.fillStyle="#fff";ctx.textAlign="center";ctx.font="bold 20px Courier New";ctx.fillText("PAUSED",canvas.width/2,canvas.height/2);
+  }
+}
+function stopSnake() { clearInterval(snakeTimer); running=false; paused=false; drawSnake(); }
+function startSnake() {
+  clearInterval(snakeTimer); snake=[{x:8,y:7},{x:7,y:7},{x:6,y:7}];
+  direction={x:1,y:0};nextDirection={x:1,y:0};score=0;food=randomFood();running=true;paused=false;
+  $("snakeScore").textContent=score;$("snakeStatus").textContent="PLAYING";
+  snakeTimer=setInterval(tickSnake,115);drawSnake();
+}
+function tickSnake() {
+  if(!running||paused)return;
+  direction=nextDirection;
+  const head={x:snake[0].x+direction.x,y:snake[0].y+direction.y};
+  if(head.x<0||head.x>=cols||head.y<0||head.y>=rows||snake.some(p=>p.x===head.x&&p.y===head.y)){stopSnake();$("snakeStatus").textContent="GAME OVER";return;}
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){score+=10;$("snakeScore").textContent=score;food=randomFood();}
+  else snake.pop();
+  drawSnake();
+}
+function setSnakeDirection(name) {
+  const dirs={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+  const d=dirs[name];if(!d||!running)return;
+  if(d.x!==-direction.x||d.y!==-direction.y)nextDirection=d;
+}
+document.addEventListener("keydown",e=>{
+  const dirs={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};
+  if(dirs[e.key] && !$("snakeWindow").hidden){e.preventDefault();setSnakeDirection(dirs[e.key]);}
+  if(e.code==="Space"&&!$("snakeWindow").hidden){e.preventDefault();$("snakePause").click();}
+});
+$("snakeStart").addEventListener("click",startSnake);
+$("snakePause").addEventListener("click",()=>{if(!running)return;paused=!paused;$("snakeStatus").textContent=paused?"PAUSED":"PLAYING";drawSnake();});
+document.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("click",()=>setSnakeDirection(b.dataset.dir)));
+snake=[{x:8,y:7},{x:7,y:7},{x:6,y:7}];score=undefined;food={x:14,y:7};drawSnake();
+
+// John de Mol: intentionally absurd fake dialog cascade, contained entirely in this page.
+let johnCount=0;
+function spawnJohnDialog() {
+  const overlay=$("johnOverlay"), box=document.createElement("div");
+  box.className="john-warning";
+  box.style.left=Math.max(4,Math.random()*(desktop.clientWidth-280))+"px";
+  box.style.top=Math.max(4,Math.random()*(desktop.clientHeight-180))+"px";
+  box.innerHTML='<strong>JOHN DE MOL APPLICATION</strong><p>YOU WILL NEVER WORK IN THE ENTERTAINMENT BUSINESS AGAIN.</p><button type="button">OK</button>';
+  box.querySelector("button").addEventListener("click",()=>{box.remove();johnCount--;if(johnCount===0)overlay.hidden=true;});
+  overlay.append(box);johnCount++;
+}
+$("openJohn").addEventListener("click",()=>{
+  $("johnOverlay").hidden=false;
+  for(let i=0;i<36;i++) setTimeout(spawnJohnDialog,i*55);
+});
+// Fake virus simulation. Dialogs are bounded overlays; reload exits the effect.
+$("openVirus").addEventListener("click",()=>{
+  const layer=$("virusOverlay"), holder=$("virusPopups");holder.innerHTML="";layer.hidden=false;
+  for(let i=0;i<18;i++){
+    const p=document.createElement("div");p.className="virus-popup";
+    p.style.left=Math.max(0,Math.random()*(desktop.clientWidth-240))+"px";
+    p.style.top=Math.max(0,Math.random()*(desktop.clientHeight-180))+"px";
+    p.innerHTML='<b>WINDOWS 98 ERROR</b><p>UNEXPECTED IRS.EXE BEHAVIOUR DETECTED.</p><button type="button">OK</button>';
+    p.querySelector("button").addEventListener("click",()=>p.remove());holder.append(p);
+  }
+});
+$("virusReload").addEventListener("click",()=>location.reload());
+
+// Zine publishing switch: add a PDF in assets/zines/, then edit this small block.
+const ZINE = {
+  enabled: false,                 // change to true when you want the menu item visible
+  file: "assets/zines/YOUR-ZINE.pdf",
+  label: "Download the zine"
+};
+if (ZINE.enabled) {
+  $("zineMenuLink").href=ZINE.file;
+  $("zineMenuLink").download="";
+  $("zineMenuLabel").textContent=ZINE.label;
+  $("zineMenuLink").hidden=false;
+}
+
+// jon kotrain animation: requires assets/jonkotrain.png, assets/train.png and assets/jonkotrain.mp3.
+let trainAudio = null, trainAnimation = null;
+$("startTrain").addEventListener("click", async () => {
+  const layer=$("trainLayer"), image=$("trainImage");
+  if (trainAnimation) cancelAnimationFrame(trainAnimation);
+  if (trainAudio) {trainAudio.pause();trainAudio.currentTime=0;}
+  trainAudio=new Audio("assets/jonkotrain.mp3");trainAudio.loop=false;
+  trainAudio.volume=0;
+  layer.classList.add("active");
+  const duration=9000, start=performance.now();
+  const audioPromise=trainAudio.play().catch(()=>{});
+  function frame(now) {
+    const p=Math.min(1,(now-start)/duration);
+    const scale=.12+Math.pow(p,1.8)*1.8;
+    image.style.transform=`translate(-50%,-50%) scale(${scale})`;
+    image.style.top=(57-p*15)+"%";
+    image.style.opacity=String(Math.min(1,p*5, (1-p)*7+0.15));
+    if(trainAudio && !trainAudio.paused){
+      const fade=p>.82?Math.max(0,(1-p)/.18):1;
+      trainAudio.volume=Math.min(1,.08+p*.92)*fade;
+    }
+    if(p<1)trainAnimation=requestAnimationFrame(frame);
+    else {layer.classList.remove("active");trainAudio?.pause();trainAudio=null;trainAnimation=null;}
+  }
+  trainAnimation=requestAnimationFrame(frame);
+});
