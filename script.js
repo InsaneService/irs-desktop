@@ -286,29 +286,66 @@ score=undefined; food={x:14,y:7}; drawSnake();
 // John de Mol: simulated cascade of in-page dialogs, never browser alerts.
 let johnCount = 0;
 let johnTimers = [];
+
 function spawnJohnDialog() {
-  const overlay=$("johnOverlay");
-  const box=document.createElement("div");
-  box.className="john-warning";
-  box.style.left=Math.max(4,Math.random()*(desktop.clientWidth-280))+"px";
-  box.style.top=Math.max(4,Math.random()*(desktop.clientHeight-180))+"px";
-  box.innerHTML='<strong>JOHN DE MOL APPLICATION</strong><p>you will never work in the entertainment business again.</p><button type="button">OK</button>';
+  const overlay = $("johnOverlay");
+  const box = document.createElement("div");
+
+  box.className = "john-warning";
+  box.style.left = Math.max(4, Math.random() * (desktop.clientWidth - 280)) + "px";
+  box.style.top = Math.max(4, Math.random() * (desktop.clientHeight - 180)) + "px";
+
+  box.innerHTML = `
+    <strong>JOHN DE MOL APPLICATION</strong>
+    <p>you will never work in the entertainment business again.</p>
+    <button type="button">OK</button>
+  `;
+
   box.querySelector("button").addEventListener("click", () => {
-    box.remove(); johnCount--;
-    if (johnCount===0) overlay.hidden=true;
+    box.remove();
+    johnCount--;
+    if (johnCount === 0) overlay.hidden = true;
   });
+
   overlay.append(box);
-playPopupSound();
-johnCount++;
+  playPopupSound();
+  johnCount++;
 }
+
 $("openJohn").addEventListener("click", () => {
-  const overlay=$("johnOverlay");
-  overlay.innerHTML="";
-  johnCount=0;
+  const overlay = $("johnOverlay");
+
+  overlay.innerHTML = "";
+  johnCount = 0;
   johnTimers.forEach(clearTimeout);
-  johnTimers=[];
-  overlay.hidden=false;
-  for (let i=0;i<360;i++) johnTimers.push(setTimeout(spawnJohnDialog,i*55));
+  johnTimers = [];
+
+  overlay.hidden = false;
+
+  const intro = document.createElement("div");
+  intro.className = "john-warning john-intro";
+
+  intro.innerHTML = `
+    <strong>JOHN DE MOL APPLICATION</strong>
+    <p>give me irrevocable rights to all you creative assets and your likeness.</p>
+    <button type="button" class="john-ok">OK</button>
+    <button type="button" class="john-reject">GET LOST JOHN</button>
+  `;
+
+  overlay.append(intro);
+  playPopupSound();
+
+  intro.querySelector(".john-ok").addEventListener("click", () => {
+    overlay.hidden = true;
+  });
+
+  intro.querySelector(".john-reject").addEventListener("click", () => {
+    intro.remove();
+
+    for (let i = 0; i < 360; i++) {
+      johnTimers.push(setTimeout(spawnJohnDialog, i * 55));
+    }
+  });
 });
 
 // Zine publishing switch: add a PDF in assets/zines/, then enable it here.
