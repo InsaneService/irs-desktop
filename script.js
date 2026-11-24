@@ -1,3 +1,6 @@
+TRAIN UNDO
+
+
 const $ = id => document.getElementById(id);
 const desktop = $("desktop");
 const startButton = $("startButton");
@@ -75,9 +78,6 @@ document.querySelectorAll(".window").forEach(win => {
 });
 
 // Proper click-and-hold desktop icon dragging
-document.querySelectorAll(".desktop-item img").forEach(img => {
-  img.draggable = false;
-});
 document.querySelectorAll(".desktop-item").forEach(icon => {
   let dragging = false;
   let moved = false;
@@ -351,8 +351,8 @@ $("openJohn").addEventListener("click", () => {
 // Zine publishing switch: add a PDF in assets/zines/, then enable it here.
 const ZINE = {
   enabled: true,
-  file: "assets/zines/IRS COC.jpg",
-  label: "CODE OF CONDUCT briefing"
+  file: "assets/zines/YOUR-ZINE.pdf",
+  label: "Download the zine"
 };
 if (ZINE.enabled) {
   $("zineMenuLink").href=ZINE.file;
@@ -403,20 +403,7 @@ function playPopupSound() {
 
   oscillator.type = "triangle";
 
-  oscillator.frequency.setValueAtTime(130, audio.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(
-    180,
-    audio.currentTime + 0.35
-
-    const oscillator = audio.createOscillator();
-  const gain = audio.createGain();
-
-  oscillator.connect(gain);
-  gain.connect(audio.destination);
-
-  oscillator.type = "sawtooth";
-
-  oscillator.frequency.setValueAtTime(120, audio.currentTime);
+  oscillator.frequency.setValueAtTime(440, audio.currentTime);
   oscillator.frequency.exponentialRampToValueAtTime(
     180,
     audio.currentTime + 0.35
@@ -431,7 +418,3 @@ function playPopupSound() {
   oscillator.start();
   oscillator.stop(audio.currentTime + 0.4);
 }
-
-document.querySelectorAll(".desktop-item").forEach(icon => {
-  icon.addEventListener("dragstart", e => e.preventDefault());
-});
