@@ -294,7 +294,9 @@ function spawnJohnDialog() {
     box.remove(); johnCount--;
     if (johnCount===0) overlay.hidden=true;
   });
-  overlay.append(box); johnCount++;
+  overlay.append(box);
+playPopupSound();
+johnCount++;
 }
 $("openJohn").addEventListener("click", () => {
   const overlay=$("johnOverlay");
@@ -303,7 +305,7 @@ $("openJohn").addEventListener("click", () => {
   johnTimers.forEach(clearTimeout);
   johnTimers=[];
   overlay.hidden=false;
-  for (let i=0;i<36;i++) johnTimers.push(setTimeout(spawnJohnDialog,i*55));
+  for (let i=0;i<360;i++) johnTimers.push(setTimeout(spawnJohnDialog,i*55));
 });
 
 // Zine publishing switch: add a PDF in assets/zines/, then enable it here.
@@ -348,3 +350,31 @@ $("startTrain").addEventListener("click", () => {
   }
   trainAnimation=requestAnimationFrame(frame);
 });
+
+
+function playPopupSound() {
+  const audio = new (window.AudioContext || window.webkitAudioContext)();
+
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.type = "triangle";
+
+  oscillator.frequency.setValueAtTime(440, audio.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    180,
+    audio.currentTime + 0.35
+  );
+
+  gain.gain.setValueAtTime(0.25, audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audio.currentTime + 0.4
+  );
+
+  oscillator.start();
+  oscillator.stop(audio.currentTime + 0.4);
+}
