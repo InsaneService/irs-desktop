@@ -81,3 +81,21 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
   .winamp-shortcut { left: 17%; top: 78%; }
   .virus-shortcut { left: 17%; top: 18%; }
 }
+
+.desktop-item,
+.desktop-item img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.desktop-item {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+.desktop-item a,
+.desktop-item img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
