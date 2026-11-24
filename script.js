@@ -75,6 +75,9 @@ document.querySelectorAll(".window").forEach(win => {
 });
 
 // Proper click-and-hold desktop icon dragging
+document.querySelectorAll(".desktop-item img").forEach(img => {
+  img.draggable = false;
+});
 document.querySelectorAll(".desktop-item").forEach(icon => {
   let dragging = false;
   let moved = false;
