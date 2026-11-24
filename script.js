@@ -121,23 +121,7 @@ document.querySelectorAll(".desktop-item").forEach((el, i) => {
   });
 });
 
-// Short-lived Windows-style cursor trail.
-let lastEcho = 0;
-desktop.addEventListener("pointermove", e => {
-  if (e.pointerType === "touch") return;
-  const now = performance.now();
-  if (now - lastEcho < 42) return;
-  lastEcho = now;
-  const r = desktop.getBoundingClientRect();
-  const echo = document.createElement("span");
-  echo.className = "cursor-echo";
-  echo.textContent = "➤";
-  echo.style.left = (e.clientX-r.left) + "px";
-  echo.style.top = (e.clientY-r.top) + "px";
-  desktop.append(echo);
-  requestAnimationFrame(() => echo.classList.add("fade"));
-  setTimeout(() => echo.remove(), 430);
-});
+
 
 // YouTube loads only after the user clicks.
 $("playVideo").addEventListener("click", () => {
