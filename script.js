@@ -418,13 +418,6 @@ function playPopupSound() {
   oscillator.start();
   oscillator.stop(audio.currentTime + 0.4);
 }
-.desktop-item {
-  -webkit-user-drag: none;
-  user-drag: none;
-}
-
-.desktop-item a,
-.desktop-item img {
-  -webkit-user-drag: none;
-  user-drag: none;
-}
+document.querySelectorAll(".desktop-item").forEach(icon => {
+  icon.addEventListener("dragstart", e => e.preventDefault());
+});
