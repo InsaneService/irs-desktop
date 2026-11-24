@@ -74,50 +74,50 @@ document.querySelectorAll(".window").forEach(win => {
   bar.addEventListener("pointercancel", () => drag = null);
 });
 
-// Drag desktop shortcuts; dragging does not activate them.
-document.querySelectorAll(".desktop-item").forEach((el, i) => {
-  const key = "irs-position-" + (el.classList[1] || i);
-  try {
-    const saved = JSON.parse(localStorage.getItem(key));
-    if (saved && innerWidth > 650) {
-      el.style.left = saved.x + "%";
-      el.style.top = saved.y + "%";
-    }
-  } catch {}
-  let drag = null;
-  el.addEventListener("pointerdown", e => {
-    if (e.button !== undefined && e.button !== 0) return;
-    const r = el.getBoundingClientRect();
-    drag = { id:e.pointerId, dx:e.clientX-r.left, dy:e.clientY-r.top,
-      sx:e.clientX, sy:e.clientY, moved:false };
-    el.setPointerCapture(e.pointerId);
+// Proper click-and-hold desktop icon dragging
+document.querySelectorAll(".desktop-item").forEach(icon => {
+  let dragging = false;
+  let moved = false;
+  let startX, startY, startLeft, startTop;
+
+  icon.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+
+    dragging = true;
+    moved = false;
+
+    const rect = icon.getBoundingClientRect();
+    const desktop = document.querySelector("#desktop").getBoundingClientRect();
+
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = rect.left - desktop.left;
+    startTop = rect.top - desktop.top;
+
+    icon.setPointerCapture(e.pointerId);
   });
-  el.addEventListener("pointermove", e => {
-    if (!drag || drag.id !== e.pointerId) return;
-    if (Math.hypot(e.clientX-drag.sx, e.clientY-drag.sy) > 6) drag.moved = true;
-    if (!drag.moved) return;
-    const d = desktop.getBoundingClientRect();
-    const x = Math.max(0, Math.min(d.width-el.offsetWidth, e.clientX-d.left-drag.dx));
-    const y = Math.max(0, Math.min(d.height-$("taskbar").offsetHeight-el.offsetHeight, e.clientY-d.top-drag.dy));
-    el.style.left = x/d.width*100 + "%";
-    el.style.top = y/d.height*100 + "%";
-  });
-  el.addEventListener("pointerup", () => {
-    if (!drag) return;
-    if (drag.moved) {
-      localStorage.setItem(key, JSON.stringify({
-        x:parseFloat(el.style.left), y:parseFloat(el.style.top)
-      }));
-      el.dataset.dragged = "1";
-      setTimeout(() => delete el.dataset.dragged, 120);
+
+  icon.addEventListener("pointermove", e => {
+    if (!dragging) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+
+    if (moved) {
+      icon.style.left = `${startLeft + dx}px`;
+      icon.style.top = `${startTop + dy}px`;
     }
-    drag = null;
   });
-  el.addEventListener("click", e => {
-    if (el.dataset.dragged === "1") {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
+
+  icon.addEventListener("pointerup", e => {
+    dragging = false;
+    icon.releasePointerCapture(e.pointerId);
+  });
+
+  icon.addEventListener("pointercancel", () => {
+    dragging = false;
   });
 });
 
