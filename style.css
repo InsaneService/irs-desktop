@@ -66,3 +66,18 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
 .cursor-echo.fade{transition:opacity .42s linear,transform .42s linear;opacity:0;transform:translate(8px,9px) rotate(-25deg)}
 
 .menu-content [hidden]{display:none!important}
+/* Keep desktop icons visible around the startup Winamp player */
+@media (min-width: 651px) {
+  .john-shortcut { left: 3%; top: 18%; }
+  .music { left: 3%; top: 39%; }
+  .shows { left: 3%; top: 60%; }
+  .instagram { left: 3%; top: 78%; }
+
+  .ie-shortcut { left: auto; right: 3%; top: 18%; }
+  .train-shortcut { left: auto; right: 3%; top: 39%; }
+  .book { left: auto; right: 3%; top: 60%; }
+  .speed { left: auto; right: 3%; top: 78%; }
+
+  .winamp-shortcut { left: 17%; top: 78%; }
+  .virus-shortcut { left: 17%; top: 18%; }
+}
