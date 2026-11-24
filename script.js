@@ -394,3 +394,7 @@ function playPopupSound() {
   oscillator.start();
   oscillator.stop(audio.currentTime + 0.4);
 }
+
+document.querySelectorAll(".desktop-item").forEach(icon => {
+  icon.addEventListener("dragstart", e => e.preventDefault());
+});
