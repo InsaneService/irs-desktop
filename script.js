@@ -308,7 +308,7 @@ $("openJohn").addEventListener("click", () => {
 
 // Zine publishing switch: add a PDF in assets/zines/, then enable it here.
 const ZINE = {
-  enabled: false,
+  enabled: true,
   file: "assets/zines/YOUR-ZINE.pdf",
   label: "Download the zine"
 };
