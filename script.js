@@ -1,4 +1,4 @@
-TRAIN UNDO
+
 
 
 const $ = id => document.getElementById(id);
