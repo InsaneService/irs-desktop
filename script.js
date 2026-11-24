@@ -351,8 +351,8 @@ $("openJohn").addEventListener("click", () => {
 // Zine publishing switch: add a PDF in assets/zines/, then enable it here.
 const ZINE = {
   enabled: true,
-  file: "assets/zines/YOUR-ZINE.pdf",
-  label: "Download the zine"
+  file: "assets/zines/IRS COC.jpg",
+  label: "CODE OF CONDUCT briefing"
 };
 if (ZINE.enabled) {
   $("zineMenuLink").href=ZINE.file;
