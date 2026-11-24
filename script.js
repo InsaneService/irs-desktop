@@ -366,7 +366,20 @@ function playPopupSound() {
 
   oscillator.type = "triangle";
 
-  oscillator.frequency.setValueAtTime(440, audio.currentTime);
+  oscillator.frequency.setValueAtTime(130, audio.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    180,
+    audio.currentTime + 0.35
+
+    const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.type = "sawtooth";
+
+  oscillator.frequency.setValueAtTime(120, audio.currentTime);
   oscillator.frequency.exponentialRampToValueAtTime(
     180,
     audio.currentTime + 0.35
