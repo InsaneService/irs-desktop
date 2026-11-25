@@ -337,13 +337,43 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     font-size: 12px !important;
   }
 
-}
 @media (max-width: 650px) {
   #prev, #play, #pause, #stop, #next {
-    font-family: Arial, sans-serif !important;
     font-size: 0 !important;
-    font-weight: bold;
+    font-family: Arial, sans-serif !important;
   }
+
+  #prev::after {
+    content: "\25C0\FE0E";
+  }
+
+  #play::after {
+    content: "\25B6\FE0E";
+  }
+
+  #pause::after {
+    content: "\2161";
+  }
+
+  #stop::after {
+    content: "\25A0";
+  }
+
+  #next::after {
+    content: "\25B6\FE0E\25B6\FE0E";
+  }
+
+  #prev::after,
+  #play::after,
+  #pause::after,
+  #stop::after,
+  #next::after {
+    font-family: Arial, sans-serif !important;
+    font-size: 17px;
+    font-variant-emoji: text;
+    color: #111;
+  }
+}
 
   #prev::after {
     content: "◀";
@@ -369,12 +399,39 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     content: "▶▶";
     font-size: 14px;
   }
-}
 @media (max-width: 650px) {
   .touch-arrows button {
     font-size: 0 !important;
     position: relative;
   }
+
+  .touch-arrows button::after {
+    font-family: Arial, sans-serif !important;
+    font-size: 20px;
+    font-variant-emoji: text;
+    color: #111;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .touch-arrows button[data-dir="up"]::after {
+    content: "\25B2\FE0E";
+  }
+
+  .touch-arrows button[data-dir="down"]::after {
+    content: "\25BC\FE0E";
+  }
+
+  .touch-arrows button[data-dir="left"]::after {
+    content: "\25C0\FE0E";
+  }
+
+  .touch-arrows button[data-dir="right"]::after {
+    content: "\25B6\FE0E";
+  }
+}
 
   .touch-arrows button::after {
     font-family: Arial, sans-serif;
