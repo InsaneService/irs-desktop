@@ -221,12 +221,12 @@ function drawSnake() {
     ctx.fillRect(p.x*cell+1,p.y*cell+1,cell-2,cell-2);
   });
   if (!running) {
-    ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.font="bold 17px Courier New";
+    ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.font="bold 17px MS Sans Serif";
     ctx.fillText(score===undefined ? "SNAKE 97" : "GAME OVER",canvas.width/2,canvas.height/2);
-    ctx.font="12px Courier New";
+    ctx.font="12px MS Sans Serif";
     ctx.fillText("PRESS START / RESTART",canvas.width/2,canvas.height/2+23);
   } else if (paused) {
-    ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.font="bold 20px Courier New";
+    ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.font="bold 20px MS Sans Serif";
     ctx.fillText("PAUSED",canvas.width/2,canvas.height/2);
   }
 }
