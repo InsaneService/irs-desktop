@@ -557,3 +557,44 @@ function playPopupSound() {
 document.querySelectorAll(".desktop-item").forEach(icon => {
   icon.addEventListener("dragstart", e => e.preventDefault());
 });
+
+// Paradiso guestlist submission
+const GUESTLIST_URL =
+  "https://wyygbaxkwqjuloywnxns.supabase.co/rest/v1/guestlist";
+
+$("guestlistForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const input = $("guestlistName");
+  const button = $("guestlistSubmit");
+  const status = $("guestlistStatus");
+  const name = input.value.trim();
+
+  if (!name) return;
+
+  button.disabled = true;
+  status.textContent = "ADDING YOU...";
+
+  try {
+    const response = await fetch(GUESTLIST_URL, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({ name })
+    });
+
+    if (!response.ok) throw new Error(await response.text());
+
+    input.value = "";
+    status.textContent = "YOU'RE ON THE LIST!";
+  } catch (error) {
+    console.error(error);
+    status.textContent = "SOMETHING WENT WRONG. TRY AGAIN.";
+  } finally {
+    button.disabled = false;
+  }
+});
