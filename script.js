@@ -240,6 +240,90 @@ const ctx = canvas.getContext("2d");
 const cell = 20, cols = canvas.width/cell, rows = canvas.height/cell;
 let snake, food, direction, nextDirection, score, snakeTimer;
 let running = false, paused = false;
+// Shared Snake 97 leaderboard
+const SUPABASE_URL = "https://wyygbaxkwqjuloywnxns.supabase.co";
+const SUPABASE_KEY = "sb_publishable_8iKzf4qBwlOCemlWt3H7uA_ucIFxN0Y";
+const LEADERBOARD_URL = `${SUPABASE_URL}/rest/v1/snake_leaderboard`;
+
+async function loadSnakeLeaderboard() {
+  const list = $("snakeLeaderboardList");
+  list.textContent = "LOADING...";
+
+  try {
+    const response = await fetch(
+      `${LEADERBOARD_URL}?select=player_name,score&order=score.desc,created_at.asc&limit=10`,
+      { headers: { apikey: SUPABASE_KEY } }
+    );
+
+    if (!response.ok) throw new Error("Could not load scores");
+
+    const scores = await response.json();
+    list.innerHTML = "";
+
+    if (!scores.length) {
+      list.textContent = "NO SCORES YET — BE THE FIRST!";
+      return;
+    }
+
+    scores.forEach((entry, index) => {
+      const item = document.createElement("li");
+      item.textContent = `${entry.player_name} — ${entry.score}`;
+      list.append(item);
+    });
+  } catch (error) {
+    list.textContent = "LEADERBOARD UNAVAILABLE";
+    console.error(error);
+  }
+}
+
+async function submitSnakeScore() {
+  const nameInput = $("snakePlayerName");
+  const status = $("snakeSubmitStatus");
+  const name = nameInput.value.trim();
+
+  if (!name || name.length > 16) {
+    status.textContent = "ENTER A NAME (1–16 CHARACTERS)";
+    return;
+  }
+
+  const button = $("snakeSubmitScore");
+  button.disabled = true;
+  status.textContent = "SUBMITTING...";
+
+  try {
+    const response = await fetch(LEADERBOARD_URL, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({
+        player_name: name,
+        score: score
+      })
+    });
+
+    if (!response.ok) throw new Error(await response.text());
+
+    status.textContent = "SCORE SAVED!";
+    $("snakeSubmit").hidden = true;
+    await loadSnakeLeaderboard();
+  } catch (error) {
+    status.textContent = "SUBMISSION FAILED — TRY AGAIN";
+    console.error(error);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$("snakeSubmitScore").addEventListener("click", submitSnakeScore);
+$("snakePlayerName").addEventListener("keydown", event => {
+  if (event.key === "Enter") submitSnakeScore();
+});
+
+loadSnakeLeaderboard();
 function randomFood() {
   let p;
   do { p = {x:Math.floor(Math.random()*cols), y:Math.floor(Math.random()*rows)}; }
