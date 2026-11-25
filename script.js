@@ -365,6 +365,8 @@ function startSnake() {
   snake=[{x:8,y:7},{x:7,y:7},{x:6,y:7}];
   direction={x:1,y:0}; nextDirection={x:1,y:0};
   score=0; food=randomFood(); running=true; paused=false;
+  $("snakeSubmit").hidden = true;
+$("snakeSubmitStatus").textContent = "";
   $("snakeScore").textContent=score; $("snakeStatus").textContent="PLAYING";
   snakeTimer=setInterval(tickSnake,115); drawSnake();
 }
@@ -374,7 +376,14 @@ function tickSnake() {
   const head={x:snake[0].x+direction.x,y:snake[0].y+direction.y};
   if (head.x<0 || head.x>=cols || head.y<0 || head.y>=rows ||
       snake.some(p=>p.x===head.x && p.y===head.y)) {
-    stopSnake(); $("snakeStatus").textContent="GAME OVER"; return;
+    stopSnake();
+$("snakeStatus").textContent = "GAME OVER";
+if (score > 0) {
+  $("snakeSubmit").hidden = false;
+  $("snakePlayerName").value = "";
+  $("snakeSubmitStatus").textContent = "";
+}
+return;
   }
   snake.unshift(head);
   if (head.x===food.x && head.y===food.y) {
