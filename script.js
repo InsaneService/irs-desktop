@@ -78,10 +78,51 @@ document.querySelectorAll(".window").forEach(win => {
 });
 
 // Proper click-and-hold desktop icon dragging
+// Remember desktop icon positions in this visitor's browser.
+const DESKTOP_POSITIONS_KEY = "irs-desktop-positions";
+
+function saveDesktopPositions() {
+  const positions = {};
+  const bounds = desktop.getBoundingClientRect();
+
+  document.querySelectorAll(".desktop-item").forEach(icon => {
+    const rect = icon.getBoundingClientRect();
+    const key = [...icon.classList].find(c => c !== "desktop-item");
+    if (!key) return;
+
+    positions[key] = {
+      x: (rect.left - bounds.left) / bounds.width,
+      y: (rect.top - bounds.top) / bounds.height
+    };
+  });
+
+  localStorage.setItem(DESKTOP_POSITIONS_KEY, JSON.stringify(positions));
+}
+
+function restoreDesktopPositions() {
+  const saved = JSON.parse(
+    localStorage.getItem(DESKTOP_POSITIONS_KEY) || "{}"
+  );
+  const bounds = desktop.getBoundingClientRect();
+
+  document.querySelectorAll(".desktop-item").forEach(icon => {
+    const key = [...icon.classList].find(c => c !== "desktop-item");
+    const pos = saved[key];
+    if (!pos) return;
+
+    icon.style.left = `${pos.x * bounds.width}px`;
+    icon.style.top = `${pos.y * bounds.height}px`;
+  });
+}
+
+restoreDesktopPositions();
+
 document.querySelectorAll(".desktop-item").forEach(icon => {
   let dragging = false;
   let moved = false;
   let startX, startY, startLeft, startTop;
+
+  icon.addEventListener("dragstart", e => e.preventDefault());
 
   icon.addEventListener("pointerdown", e => {
     if (e.button !== 0) return;
@@ -90,12 +131,12 @@ document.querySelectorAll(".desktop-item").forEach(icon => {
     moved = false;
 
     const rect = icon.getBoundingClientRect();
-    const desktop = document.querySelector("#desktop").getBoundingClientRect();
+    const bounds = desktop.getBoundingClientRect();
 
     startX = e.clientX;
     startY = e.clientY;
-    startLeft = rect.left - desktop.left;
-    startTop = rect.top - desktop.top;
+    startLeft = rect.left - bounds.left;
+    startTop = rect.top - bounds.top;
 
     icon.setPointerCapture(e.pointerId);
   });
@@ -116,14 +157,16 @@ document.querySelectorAll(".desktop-item").forEach(icon => {
 
   icon.addEventListener("pointerup", e => {
     dragging = false;
-    icon.releasePointerCapture(e.pointerId);
+    if (moved) saveDesktopPositions();
+    if (icon.hasPointerCapture(e.pointerId)) {
+      icon.releasePointerCapture(e.pointerId);
+    }
   });
 
   icon.addEventListener("pointercancel", () => {
     dragging = false;
   });
 });
-
 
 
 // YouTube loads only after the user clicks.
