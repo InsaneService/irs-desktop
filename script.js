@@ -403,9 +403,9 @@ function playPopupSound() {
 
   oscillator.type = "sawtooth";
 
-  oscillator.frequency.setValueAtTime(440, audio.currentTime);
+  oscillator.frequency.setValueAtTime(130, audio.currentTime);
   oscillator.frequency.exponentialRampToValueAtTime(
-    180,
+    90,
     audio.currentTime + 0.35
   );
 
