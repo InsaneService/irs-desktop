@@ -338,3 +338,35 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
   }
 
 }
+@media (max-width: 650px) {
+  #prev, #play, #pause, #stop, #next {
+    font-family: Arial, sans-serif !important;
+    font-size: 0 !important;
+    font-weight: bold;
+  }
+
+  #prev::after {
+    content: "◀";
+    font-size: 17px;
+  }
+
+  #play::after {
+    content: "▶";
+    font-size: 17px;
+  }
+
+  #pause::after {
+    content: "Ⅱ";
+    font-size: 17px;
+  }
+
+  #stop::after {
+    content: "■";
+    font-size: 17px;
+  }
+
+  #next::after {
+    content: "▶▶";
+    font-size: 14px;
+  }
+}
