@@ -297,7 +297,7 @@ function spawnJohnDialog() {
 
   box.innerHTML = `
     <strong>JOHN DE MOL APPLICATION</strong>
-    <p>you will never work in the entertainment business again.</p>
+    <p>you will never work in the entertainment industry again.</p>
     <button type="button">OK</button>
   `;
 
