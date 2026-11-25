@@ -221,10 +221,9 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     width: min(270px, calc(100% - 20px));
   }
 }
+
 /* MOBILE BUTTON CLEANUP */
 @media (max-width: 650px) {
-
-  /* Consistent button styling */
   button {
     font-family: Tahoma, Arial, sans-serif !important;
     font-size: 13px !important;
@@ -245,7 +244,6 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     border-style: inset !important;
   }
 
-  /* Taskbar buttons */
   .start-button {
     min-width: 105px;
     height: 46px;
@@ -266,7 +264,6 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     font-size: 27px !important;
   }
 
-  /* Audio player controls */
   .transport {
     gap: 5px;
     flex-wrap: wrap;
@@ -277,7 +274,8 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     min-width: 38px;
     height: 38px;
     padding: 4px;
-    font-size: 16px !important;
+    font-size: 0 !important;
+    position: relative;
   }
 
   .volume {
@@ -290,7 +288,6 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     width: 65%;
   }
 
-  /* Snake controls */
   .snake-controls button {
     min-height: 42px;
     flex: 1;
@@ -304,11 +301,11 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     width: 48px;
     height: 43px;
     min-width: 48px;
-    font-size: 18px !important;
+    font-size: 0 !important;
     padding: 0;
+    position: relative;
   }
 
-  /* Start menu */
   .menu-content a,
   .menu-content > button {
     min-height: 42px;
@@ -317,19 +314,16 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     padding: 7px;
   }
 
-  /* Video button */
   .play-video {
     min-height: 55px;
     padding: 8px 14px;
   }
 
-  /* Guestlist button */
   .guestlist-widget button {
     min-height: 36px;
     font-size: 12px !important;
   }
 
-  /* Popup buttons */
   .john-warning button,
   .virus-popup button,
   #virusReload {
@@ -337,114 +331,100 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     font-size: 12px !important;
   }
 
-@media (max-width: 650px) {
-  #prev, #play, #pause, #stop, #next {
-    font-size: 0 !important;
-    font-family: Arial, sans-serif !important;
+  /* Winamp: CSS-drawn controls */
+  #prev::before,
+  #next::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 2px;
+    height: 15px;
+    background: #26351d;
+    transform: translateY(-50%);
   }
 
-  #prev::after {
-    content: "\25C0\FE0E";
-  }
-
-  #play::after {
-    content: "\25B6\FE0E";
-  }
-
-  #pause::after {
-    content: "\2161";
-  }
-
-  #stop::after {
-    content: "\25A0";
-  }
-
-  #next::after {
-    content: "\25B6\FE0E\25B6\FE0E";
-  }
+  #prev::before { left: 8px; }
+  #next::before { right: 8px; }
 
   #prev::after,
-  #play::after,
-  #pause::after,
-  #stop::after,
-  #next::after {
-    font-family: Arial, sans-serif !important;
-    font-size: 17px;
-    font-variant-emoji: text;
-    color: #111;
+  #next::after,
+  #play::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    transform: translateY(-50%);
   }
-}
 
   #prev::after {
-    content: "◀";
-    font-size: 17px;
+    left: 13px;
+    border-right: 11px solid #26351d;
+  }
+
+  #next::after {
+    right: 13px;
+    border-left: 11px solid #26351d;
   }
 
   #play::after {
-    content: "▶";
-    font-size: 17px;
+    left: 50%;
+    border-left: 13px solid #26351d;
+    transform: translate(-40%, -50%);
   }
 
   #pause::after {
-    content: "Ⅱ";
-    font-size: 17px;
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 15px;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(
+      to right,
+      #26351d 0 4px,
+      transparent 4px 8px,
+      #26351d 8px 12px
+    );
   }
 
   #stop::after {
-    content: "■";
-    font-size: 17px;
-  }
-
-  #next::after {
-    content: "▶▶";
-    font-size: 14px;
-  }
-@media (max-width: 650px) {
-  .touch-arrows button {
-    font-size: 0 !important;
-    position: relative;
-  }
-
-  .touch-arrows button::after {
-    font-family: Arial, sans-serif !important;
-    font-size: 20px;
-    font-variant-emoji: text;
-    color: #111;
+    content: "";
     position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
+    left: 50%;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    transform: translate(-50%, -50%);
+    background: #26351d;
   }
 
-  .touch-arrows button[data-dir="up"]::after {
-    content: "\25B2\FE0E";
+  /* Snake: CSS-drawn directional arrows */
+  .touch-arrows button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 16px solid #26351d;
+    transform: translate(-50%, -50%);
   }
 
   .touch-arrows button[data-dir="down"]::after {
-    content: "\25BC\FE0E";
+    transform: translate(-50%, -50%) rotate(180deg);
   }
 
   .touch-arrows button[data-dir="left"]::after {
-    content: "\25C0\FE0E";
+    transform: translate(-50%, -50%) rotate(-90deg);
   }
 
   .touch-arrows button[data-dir="right"]::after {
-    content: "\25B6\FE0E";
+    transform: translate(-50%, -50%) rotate(90deg);
   }
-}
-
-  .touch-arrows button::after {
-    font-family: Arial, sans-serif;
-    font-size: 20px;
-    color: #111;
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-  }
-
-  .touch-arrows button[data-dir="up"]::after { content: "▲"; }
-  .touch-arrows button[data-dir="down"]::after { content: "▼"; }
-  .touch-arrows button[data-dir="left"]::after { content: "◀"; }
-  .touch-arrows button[data-dir="right"]::after { content: "▶"; }
 }
