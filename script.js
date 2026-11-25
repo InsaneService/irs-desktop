@@ -296,7 +296,7 @@ function spawnJohnDialog() {
   box.style.top = Math.max(4, Math.random() * (desktop.clientHeight - 180)) + "px";
 
   box.innerHTML = `
-    <strong>JOHN DE MOL APPLICATION</strong>
+    <strong>JOHN DE MOL ULTIMATUM</strong>
     <p>you will never work in the entertainment industry again.</p>
     <button type="button">OK</button>
   `;
