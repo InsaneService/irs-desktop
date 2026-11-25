@@ -408,6 +408,34 @@ function playPopupSound() {
     90,
     audio.currentTime + 0.35
   );
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.type = "triangle";
+
+  oscillator.frequency.setValueAtTime(180, audio.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    140,
+    audio.currentTime + 0.35
+  );
+
+  );
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.type = "triangle";
+
+  oscillator.frequency.setValueAtTime(200, audio.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    160,
+    audio.currentTime + 0.35
+  );
 
   gain.gain.setValueAtTime(0.25, audio.currentTime);
   gain.gain.exponentialRampToValueAtTime(
