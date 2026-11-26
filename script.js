@@ -116,6 +116,76 @@ function restoreDesktopPositions() {
 }
 
 restoreDesktopPositions();
+// Automatically arrange desktop icons around visible startup windows.
+function arrangeIconsAroundWindows() {
+  const desktopRect = desktop.getBoundingClientRect();
+  const taskbarHeight = $("taskbar").offsetHeight;
+  const icons = [...document.querySelectorAll(".desktop-item")];
+
+  const obstacles = [
+    ...document.querySelectorAll(".window:not([hidden])"),
+    document.querySelector(".desktop-heading")
+  ].filter(Boolean).map(el => {
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left - desktopRect.left - 8,
+      y: r.top - desktopRect.top - 8,
+      w: r.width + 16,
+      h: r.height + 16
+    };
+  });
+
+  const placed = [];
+  const step = 12;
+  const maxY = desktopRect.height - taskbarHeight - 10;
+
+  function overlaps(a, b) {
+    const gap = 10;
+    return (
+      a.x < b.x + b.w + gap &&
+      a.x + a.w + gap > b.x &&
+      a.y < b.y + b.h + gap &&
+      a.y + a.h + gap > b.y
+    );
+  }
+
+  icons.forEach(icon => {
+    const current = icon.getBoundingClientRect();
+    const desiredX = current.left - desktopRect.left;
+    const desiredY = current.top - desktopRect.top;
+
+    const w = icon.offsetWidth;
+    const h = icon.offsetHeight;
+    const candidates = [];
+
+    for (let y = 8; y <= maxY - h; y += step) {
+      for (let x = 8; x <= desktopRect.width - w - 8; x += step) {
+        const candidate = { x, y, w, h };
+
+        if (
+          !obstacles.some(o => overlaps(candidate, o)) &&
+          !placed.some(p => overlaps(candidate, p))
+        ) {
+          const distance =
+            (x - desiredX) ** 2 + (y - desiredY) ** 2;
+
+          candidates.push({ ...candidate, distance });
+        }
+      }
+    }
+
+    candidates.sort((a, b) => a.distance - b.distance);
+
+    if (candidates.length) {
+      const spot = candidates[0];
+      icon.style.left = `${spot.x}px`;
+      icon.style.top = `${spot.y}px`;
+      placed.push(spot);
+    }
+  });
+}
+
+requestAnimationFrame(arrangeIconsAroundWindows);
 
 document.querySelectorAll(".desktop-item").forEach(icon => {
   let dragging = false;
