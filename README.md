@@ -6,7 +6,7 @@
 5. Change `file` to the exact PDF path, for example `assets/zines/irs-zine-01.pdf`.
 6. Change `label` to the menu text you want.
 
-The zine entry stays hidden until `enabled` is set to `true`.
+The zine stays hidden until `enabled` is set to `true`.
 
 ## Adding music to audio player
 Upload MP3s into `assets/music/`. In `script.js`, find `const TRACKS = []` and add entries like:
