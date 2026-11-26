@@ -56,8 +56,9 @@
   <button class="desktop-item train-shortcut" id="startTrain" type="button">
     <img src="assets/jonkotrain.png" alt=""><span class="item-label">jonkotrain</span>
   </button>
-  <button class="desktop-item virus-shortcut" id="openVirus" type="button">
-    <span class="unknown-file">?</span><span class="item-label">҉̷V̷I̷R̷U̷S̷.exe</span>
+<button class="desktop-item irs-tv-shortcut" id="openIRSTV" type="button">
+  <img src="assets/irstv.png" alt="">
+  <span class="item-label">IRS TV</span>
   </button>
 
   <div id="trainLayer" aria-hidden="true">
@@ -151,6 +152,23 @@
   </nav>
 
   <footer class="taskbar" id="taskbar">
+    <!-- IRS TV window -->
+<section class="window irs-tv-window" id="irsTvWindow" hidden>
+  <header class="window-title">
+    <span>IRS TELEVISION NETWORK</span>
+    <button class="close" data-close="irsTvWindow">×</button>
+  </header>
+
+  <div class="irs-tv-set">
+    <div class="irs-tv-screen" id="irsTvScreen"></div>
+    <img class="irs-tv-frame" src="assets/tvframe.png" alt="">
+  </div>
+</section>
+
+<!-- Video stays alive when the TV window is closed -->
+<div class="irs-tv-video-host" id="irsTvVideoHost">
+  <video id="irsTvVideo" muted autoplay playsinline preload="auto"></video>
+</div>
     <button id="startButton" class="start-button"><span class="windows-flag"><i></i><i></i><i></i><i></i></span>Start</button>
     <div class="bar-divider"></div>
     <button class="quick-icon" id="quickMail" aria-label="Book a show" title="Book a show">✉</button>
