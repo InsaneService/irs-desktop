@@ -6,8 +6,8 @@ const desktop = $("desktop");
 const startButton = $("startButton");
 const startMenu = $("startMenu");
 
-// Remove the obsolete fake-virus desktop shortcut and its unused overlay.
-// John de Mol is the replacement.
+
+
 document.querySelector(".virus-shortcut")?.remove();
 $("virusOverlay")?.remove();
 
@@ -49,7 +49,7 @@ document.querySelectorAll("[data-close]").forEach(button => {
   });
 });
 
-// Movable Windows-style application windows.
+
 document.querySelectorAll(".window").forEach(win => {
   const bar = win.querySelector(".window-title");
   if (!bar) return;
@@ -77,8 +77,7 @@ document.querySelectorAll(".window").forEach(win => {
   bar.addEventListener("pointercancel", () => drag = null);
 });
 
-// Proper click-and-hold desktop icon dragging
-// Remember desktop icon positions in this visitor's browser.
+
 const DESKTOP_POSITIONS_KEY = "irs-desktop-positions";
 
 function saveDesktopPositions() {
@@ -116,7 +115,7 @@ function restoreDesktopPositions() {
 }
 
 restoreDesktopPositions();
-// Automatically arrange desktop icons around visible startup windows.
+
 function arrangeIconsAroundWindows() {
   const desktopRect = desktop.getBoundingClientRect();
   const taskbarHeight = $("taskbar").offsetHeight;
@@ -239,13 +238,13 @@ document.querySelectorAll(".desktop-item").forEach(icon => {
 });
 
 
-// YouTube loads only after the user clicks.
+
 $("playVideo").addEventListener("click", () => {
   $("videoFrame").innerHTML =
     '<iframe src="https://www.youtube.com/embed/3NJEFZtLr9I?autoplay=1" title="Insane Revenue Service video" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 });
 
-// Winamp playlist. The malformed array in the live version was the fatal syntax error.
+
 const TRACKS = [
   { title:"Take It", artist:"Flowered Up", src:"assets/music/Track01.mp3" },
   { title:"There's No Other Way", artist:"Blur", src:"assets/music/Track02.mp3" },
@@ -304,7 +303,7 @@ audio.addEventListener("ended", () => loadTrack(current+1, true));
 renderPlaylist();
 audio.volume = 0.7;
 
-// Snake 97 game.
+// Snake game.
 const canvas = $("snakeCanvas");
 const ctx = canvas.getContext("2d");
 const cell = 20, cols = canvas.width/cell, rows = canvas.height/cell;
@@ -489,7 +488,7 @@ document.querySelectorAll("[data-dir]").forEach(b => {
 snake=[{x:8,y:7},{x:7,y:7},{x:6,y:7}];
 score=undefined; food={x:14,y:7}; drawSnake();
 
-// John de Mol: simulated cascade of in-page dialogs, never browser alerts.
+
 let johnCount = 0;
 let johnTimers = [];
 
@@ -554,7 +553,7 @@ $("openJohn").addEventListener("click", () => {
   });
 });
 
-// Zine publishing switch: add a PDF in assets/zines/, then enable it here.
+// Zine publishing: add a PDF in assets/zines/, then enable it here.
 const ZINE = {
   enabled: true,
   file: "assets/zines/IRS COC.jpg",
@@ -567,7 +566,7 @@ if (ZINE.enabled) {
   $("zineMenuLink").hidden=false;
 }
 
-// Jonkotrain: image approaches, grows, then exits; sound follows its approach.
+
 let trainAudio=null, trainAnimation=null;
 $("startTrain").addEventListener("click", () => {
   const layer=$("trainLayer"), image=$("trainImage");
@@ -628,7 +627,7 @@ document.querySelectorAll(".desktop-item").forEach(icon => {
   icon.addEventListener("dragstart", e => e.preventDefault());
 });
 
-// Paradiso guestlist submission
+
 const GUESTLIST_URL =
   "https://wyygbaxkwqjuloywnxns.supabase.co/rest/v1/guestlist";
 
@@ -668,7 +667,7 @@ $("guestlistForm").addEventListener("submit", async event => {
     button.disabled = false;
   }
 });
-// IRS TV — background video channel
+
 
 const irsTvVideo = $("irsTvVideo");
 const irsTvWindow = $("irsTvWindow");
@@ -687,7 +686,7 @@ let irsTvInitialStart = true;
 
 function irsTvPlay() {
   irsTvVideo.play().catch(() => {
-    // Playback can be blocked by browser autoplay settings.
+  
   });
 }
 
@@ -701,7 +700,7 @@ irsTvVideo.addEventListener("loadedmetadata", () => {
   if (irsTvInitialStart) {
     irsTvInitialStart = false;
 
-    // Begin at a random point in the first randomly selected video.
+    // Begin at a random point
     if (Number.isFinite(irsTvVideo.duration) && irsTvVideo.duration > 30) {
       irsTvVideo.currentTime =
         Math.random() * (irsTvVideo.duration - 20);
@@ -736,7 +735,7 @@ $("openIRSTV").addEventListener("click", () => {
   irsTvPlay();
 });
 
-// Close TV: move video out of sight and mute it, but do not stop it.
+// Close TV: but do not stop it.
 document
   .querySelector('[data-close="irsTvWindow"]')
   .addEventListener("click", () => {
