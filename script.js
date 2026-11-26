@@ -598,3 +598,78 @@ $("guestlistForm").addEventListener("submit", async event => {
     button.disabled = false;
   }
 });
+// IRS TV — background video channel
+
+const irsTvVideo = $("irsTvVideo");
+const irsTvWindow = $("irsTvWindow");
+const irsTvScreen = $("irsTvScreen");
+const irsTvVideoHost = $("irsTvVideoHost");
+
+const IRS_TV_VIDEOS = [
+  "https://dn710208.ca.archive.org/0/items/pkmn-vol-1-vhs/pkmn-vol1%20%281%29.mp4",
+  "https://ia600909.us.archive.org/22/items/vts-01-1_20250717_0338/VTS_01_3.mp4",
+  "https://ia600909.us.archive.org/22/items/vts-01-1_20250717_0338/VTS_01_1.mp4",
+  "https://dn601203.us.archive.org/0/items/blank-vhs-nick/BLANK%20VHS%20Nick%20Part%201.mp4"
+];
+
+let irsTvIndex = Math.floor(Math.random() * IRS_TV_VIDEOS.length);
+let irsTvInitialStart = true;
+
+function irsTvPlay() {
+  irsTvVideo.play().catch(() => {
+    // Playback can be blocked by browser autoplay settings.
+  });
+}
+
+function irsTvLoad(index) {
+  irsTvIndex = (index + IRS_TV_VIDEOS.length) % IRS_TV_VIDEOS.length;
+  irsTvVideo.src = IRS_TV_VIDEOS[irsTvIndex];
+  irsTvVideo.load();
+}
+
+irsTvVideo.addEventListener("loadedmetadata", () => {
+  if (irsTvInitialStart) {
+    irsTvInitialStart = false;
+
+    // Begin at a random point in the first randomly selected video.
+    if (Number.isFinite(irsTvVideo.duration) && irsTvVideo.duration > 30) {
+      irsTvVideo.currentTime =
+        Math.random() * (irsTvVideo.duration - 20);
+    }
+  }
+
+  irsTvPlay();
+});
+
+// Move to the next video when one finishes.
+irsTvVideo.addEventListener("ended", () => {
+  irsTvLoad(irsTvIndex + 1);
+});
+
+// Skip a video if it fails to load.
+irsTvVideo.addEventListener("error", () => {
+  irsTvLoad(irsTvIndex + 1);
+});
+
+// Start muted in the background when the site loads.
+irsTvVideo.muted = true;
+irsTvLoad(irsTvIndex);
+
+// Open TV: show the window, move the video into the screen and enable sound.
+$("openIRSTV").addEventListener("click", () => {
+  showWindow("irsTvWindow");
+
+  irsTvScreen.appendChild(irsTvVideo);
+  irsTvVideo.muted = false;
+  irsTvVideo.volume = 0.8;
+
+  irsTvPlay();
+});
+
+// Close TV: move video out of sight and mute it, but do not stop it.
+document
+  .querySelector('[data-close="irsTvWindow"]')
+  .addEventListener("click", () => {
+    irsTvVideo.muted = true;
+    irsTvVideoHost.appendChild(irsTvVideo);
+  });
