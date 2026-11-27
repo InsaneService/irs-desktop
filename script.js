@@ -943,18 +943,25 @@ $("screenCassette").addEventListener("click", () => {
     artist: "Insane Revenue Service - RECOVERED FILE",
     src: "assets/SpreadEagle.mp3"
   });
-  $("yeahDawgTape").addEventListener("click", () => {
-  showWindow("playerWindow");
-
-  TRACKS.push({
-    title: "20 past 4",
-    artist: "Insane Revenue Service - RECOVERED FILE",
-    src: "assets/20%20past%204.mp3"
-  });
-
   loadTrack(TRACKS.length - 1, true);
 });
-  loadTrack(TRACKS.length - 1, true);
+
+$("yeahDawgTape").addEventListener("click", () => {
+  $("yeahDawgTape").hidden = true;
+  const trackSrc = "assets/20%20past%204.mp3";
+  let trackIndex = TRACKS.findIndex(track => track.src === trackSrc);
+
+  if (trackIndex === -1) {
+    TRACKS.push({
+      title: "20 past 4",
+      artist: "Insane Revenue Service - RECOVERED FILE",
+      src: trackSrc
+    });
+    trackIndex = TRACKS.length - 1;
+  }
+
+  showWindow("playerWindow");
+  loadTrack(trackIndex, true);
 });
 
 if (localStorage.getItem(SAVER_CASSETTE_KEY) === "yes") {
@@ -1158,6 +1165,8 @@ $("sendRecycleMessage").addEventListener("click", async () => {
   } finally {
     button.disabled = false;
   }
+});
+
   /* YEAH DAWG SECRET */
 
 const yeahDawg = $("yeahDawg");
@@ -1181,7 +1190,7 @@ function showYeahDawg() {
 }
 
 function scheduleYeahDawg() {
-  setTimeout(showYeahDawg, 1 * 60 * 1000);
+  setTimeout(showYeahDawg, 15 * 60 * 1000);
 }
 
 yeahDawg.addEventListener("click", async () => {
@@ -1212,4 +1221,3 @@ yeahDawg.addEventListener("click", async () => {
 });
 
 scheduleYeahDawg();
-});
