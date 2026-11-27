@@ -60,7 +60,41 @@
   <img src="assets/irstv.png" alt="">
   <span class="item-label">IRS TV</span>
   </button>
+  <button class="desktop-item cassette-shortcut" id="screenCassette" type="button" hidden>
+    <img src="assets/cassette.png" alt="">
+    <span class="item-label">FOUND TAPE</span>
+  </button>
 
+  <button class="desktop-item recycle-shortcut" id="openRecycle" type="button" hidden>
+    <img src="assets/recycle.png" alt="">
+    <span class="item-label">Recycle Bin</span>
+  </button>
+
+  <section id="screensaver" hidden>
+    <img id="screensaverLogo" src="assets/irs.png" alt="">
+    <div id="screensaverConfetti"></div>
+  </section>
+
+  <section class="window recycle-window" id="recycleWindow" hidden>
+    <header class="window-title">
+      <span>RECYCLE BIN — CLASSIFIED ARCHIVE</span>
+      <button class="close" data-close="recycleWindow">×</button>
+    </header>
+    <div class="recycle-body">
+      <p>RECOVERED MATERIAL — HANDLE WITH CARE</p>
+      <div id="recycleFiles" class="recycle-files"></div>
+      <div id="recycleViewer" class="recycle-viewer" hidden></div>
+      <hr>
+      <div class="notepad">
+        <strong>NOTEPAD — LEAVE A MESSAGE FOR THE NEXT VISITOR</strong>
+        <input id="recycleAuthor" maxlength="30" placeholder="Your name (optional)">
+        <textarea id="recycleMessage" maxlength="500" placeholder="Write a message..." rows="4"></textarea>
+        <button id="sendRecycleMessage" type="button">SAVE MESSAGE</button>
+        <div id="recycleMessageStatus" aria-live="polite"></div>
+        <div id="recycleMessages"></div>
+      </div>
+    </div>
+  </section>
   <div id="trainLayer" aria-hidden="true">
     <img id="trainImage" src="assets/train.png" alt="">
   </div>
