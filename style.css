@@ -752,6 +752,10 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
   transition: transform 0.35s ease-out;
 }
 
+#yeahDawg[hidden] {
+  display: none !important;
+}
+
 #yeahDawg img {
   position: absolute;
   bottom: 0;
