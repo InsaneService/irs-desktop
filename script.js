@@ -1147,4 +1147,58 @@ $("sendRecycleMessage").addEventListener("click", async () => {
   } finally {
     button.disabled = false;
   }
+  /* YEAH DAWG SECRET */
+
+const yeahDawg = $("yeahDawg");
+const yeahDawgImage = $("yeahDawgImage");
+
+let yeahDawgTimer;
+let yeahDawgActive = false;
+let yeahDawgCollected = false;
+
+function showYeahDawg() {
+  if (yeahDawgActive || yeahDawgCollected) return;
+
+  yeahDawgActive = true;
+  yeahDawg.classList.add("peeking");
+
+  yeahDawgTimer = setTimeout(() => {
+    yeahDawg.classList.remove("peeking");
+    yeahDawgActive = false;
+    scheduleYeahDawg();
+  }, 5000);
+}
+
+function scheduleYeahDawg() {
+  setTimeout(showYeahDawg, 15 * 60 * 1000);
+}
+
+yeahDawg.addEventListener("click", async () => {
+  if (!yeahDawgActive || yeahDawgCollected) return;
+
+  yeahDawgActive = false;
+  clearTimeout(yeahDawgTimer);
+  yeahDawgCollected = true;
+
+  const dogAudio = new Audio("assets/yeahdawg.mp3");
+  dogAudio.play().catch(() => {});
+
+  yeahDawgImage.src = "assets/yeahdawg2.png";
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  yeahDawgImage.src = "assets/yeahdawg1.png";
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  yeahDawgImage.src = "assets/yeahdawg2.png";
+  yeahDawg.classList.remove("peeking");
+
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  yeahDawg.hidden = true;
+
+  const tape = $("yeahDawgTape");
+  tape.hidden = false;
+});
+
+scheduleYeahDawg();
 });
