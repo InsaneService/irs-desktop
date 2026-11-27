@@ -651,6 +651,9 @@ $("startTrain").addEventListener("click", () => {
   if (trainAnimation) cancelAnimationFrame(trainAnimation);
   if (trainAudio) { trainAudio.pause(); trainAudio.currentTime=0; }
   trainAudio=new Audio("assets/jonkotrain.mp3");
+  trainAudio.addEventListener("play", maybeRevealTape4);
+  trainAudio.addEventListener("pause", maybeRevealTape4);
+  trainAudio.addEventListener("ended", maybeRevealTape4);
   trainAudio.volume=0;
   layer.classList.add("active");
   const duration=9000, start=performance.now();
@@ -820,6 +823,58 @@ document
     irsTvVideo.muted = true;
     irsTvVideoHost.appendChild(irsTvVideo);
   });
+/* COLLECTABLE TAPE 4: TV + JONKO TRAIN + TAKE IT must overlap */
+const TAPE4_COLLECTED_KEY = "irs-collectable-tape-4-collected";
+const tape4 = $("collectableTape4");
+
+function maybeRevealTape4() {
+  const conditionsMet =
+    !irsTvWindow.hidden &&
+    !irsTvVideo.paused &&
+    !irsTvVideo.muted &&
+    trainAudio && !trainAudio.paused &&
+    !audio.paused &&
+    current >= 0 &&
+    TRACKS[current].title === "Take It" &&
+    TRACKS[current].artist === "Flowered Up";
+
+  if (conditionsMet && localStorage.getItem(TAPE4_COLLECTED_KEY) !== "yes") {
+    tape4.hidden = false;
+  }
+}
+
+["play", "pause", "ended"].forEach(eventName => {
+  audio.addEventListener(eventName, maybeRevealTape4);
+  irsTvVideo.addEventListener(eventName, maybeRevealTape4);
+});
+
+$("openIRSTV").addEventListener("click", maybeRevealTape4);
+document.querySelector('[data-close="irsTvWindow"]')
+  .addEventListener("click", maybeRevealTape4);
+
+tape4.addEventListener("click", () => {
+  tape4.hidden = true;
+  localStorage.setItem(TAPE4_COLLECTED_KEY, "yes");
+
+  const trackSrc = "assets/Keep Your Eyes Off The Clock.mp3";
+  let trackIndex = TRACKS.findIndex(track => track.src === trackSrc);
+  if (trackIndex === -1) {
+    TRACKS.push({
+      title: "Keep Your Eyes Off The Clock",
+      artist: "Insane Revenue Service - RECOVERED FILE",
+      src: trackSrc
+    });
+    trackIndex = TRACKS.length - 1;
+  }
+
+  showWindow("playerWindow");
+  loadTrack(trackIndex, true);
+});
+
+if (localStorage.getItem(TAPE4_COLLECTED_KEY) === "yes") {
+  tape4.hidden = true;
+}
+
 /* SECRET SCREENSAVER + RECYCLE BIN */
 
 const SAVER_CASSETTE_KEY = "irs-screensaver-cassette-collected";
@@ -948,12 +1003,12 @@ $("screenCassette").addEventListener("click", () => {
 
 $("yeahDawgTape").addEventListener("click", () => {
   $("yeahDawgTape").hidden = true;
-  const trackSrc = "assets/20%20past%204.mp3";
+  const trackSrc = "assets/FISH ON.mp3";
   let trackIndex = TRACKS.findIndex(track => track.src === trackSrc);
 
   if (trackIndex === -1) {
     TRACKS.push({
-      title: "20 past 4",
+      title: "FISH ON",
       artist: "Insane Revenue Service - RECOVERED FILE",
       src: trackSrc
     });
