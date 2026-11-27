@@ -690,3 +690,22 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
 .desktop-item[hidden] {
   display: none !important;
 }
+
+
+/* Mobile Snake leaderboard collapse */
+.snake-leaderboard-toggle {
+  display: none;
+}
+@media (max-width: 650px) {
+  .snake-leaderboard-toggle {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .snake-leaderboard-panel {
+    display: none;
+  }
+  .snake-leaderboard-wrap.is-open .snake-leaderboard-panel {
+    display: block;
+  }
+}
