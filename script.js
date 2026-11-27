@@ -943,6 +943,17 @@ $("screenCassette").addEventListener("click", () => {
     artist: "Insane Revenue Service - RECOVERED FILE",
     src: "assets/SpreadEagle.mp3"
   });
+  $("yeahDawgTape").addEventListener("click", () => {
+  showWindow("playerWindow");
+
+  TRACKS.push({
+    title: "20 past 4",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/20%20past%204.mp3"
+  });
+
+  loadTrack(TRACKS.length - 1, true);
+});
   loadTrack(TRACKS.length - 1, true);
 });
 
