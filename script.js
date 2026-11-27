@@ -1180,10 +1180,12 @@ function showYeahDawg() {
   if (yeahDawgActive || yeahDawgCollected) return;
 
   yeahDawgActive = true;
+  yeahDawg.hidden = false;
   yeahDawg.classList.add("peeking");
 
   yeahDawgTimer = setTimeout(() => {
     yeahDawg.classList.remove("peeking");
+    yeahDawg.hidden = true;
     yeahDawgActive = false;
     scheduleYeahDawg();
   }, 5000);
