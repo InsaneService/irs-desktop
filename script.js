@@ -880,7 +880,7 @@ resetSaverTimer();
 /* RECYCLE BIN UNLOCK */
 
 function checkRecycleUnlock() {
-  if (Number(score) > 250) {
+  if (Number(score) > 30) {
     localStorage.setItem(RECYCLE_UNLOCK_KEY, "yes");
     $("openRecycle").hidden = false;
   }
@@ -981,7 +981,7 @@ function collectRecycleAudio(file) {
 
   TRACKS.push({
     title: file.name.replace(/\.mp3$/i, ""),
-    artist: "RECOVERED FILE",
+    artist: "Insane Revenue Service - RECOVERED FILE",
     src: `assets/recycle/${encodeURIComponent(file.name)}`
   });
 
