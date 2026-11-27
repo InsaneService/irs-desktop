@@ -880,7 +880,7 @@ resetSaverTimer();
 /* RECYCLE BIN UNLOCK */
 
 function checkRecycleUnlock() {
-  if (Number(score) > 30) {
+  if (Number(score) > 40) {
     localStorage.setItem(RECYCLE_UNLOCK_KEY, "yes");
     $("openRecycle").hidden = false;
   }
