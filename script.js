@@ -929,7 +929,7 @@ $("screenCassette").addEventListener("click", () => {
   localStorage.setItem(SAVER_CASSETTE_KEY, "yes");
   showWindow("playerWindow");
   TRACKS.push({
-    title: "Collectable tape 2",
+    title: "Spread Eagle",
     artist: "Insane Revenue Service - RECOVERED FILE",
     src: "assets/SpreadEagle.mp3"
   });
