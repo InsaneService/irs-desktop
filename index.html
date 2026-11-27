@@ -140,7 +140,7 @@
       <div class="snake-score">SCORE: <span id="snakeScore">0</span> <span id="snakeStatus">READY</span></div>
       <canvas id="snakeCanvas" width="400" height="300" aria-label="Snake game"></canvas>
       <div class="snake-controls"><button id="snakeStart">START / RESTART</button><button id="snakePause">PAUSE</button></div>
-      <div class="snake-help">ARROW KEYS / WASD TO MOVE · SPACE TO PAUSE</div>
+      <div class="snake-help">JOYSTICK / ARROW KEYS / WASD TO MOVE · SPACE TO PAUSE</div>
        <div id="snakeSubmit" hidden>
   <p>GAME OVER — ENTER YOUR NAME FOR THE LEADERBOARD</p>
   <input id="snakePlayerName" maxlength="16" placeholder="Your name" autocomplete="nickname">
@@ -165,7 +165,7 @@
     </div>
   </div>
 </div>
-      <div class="touch-arrows"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div>
+      <div class="snake-joystick" id="snakeJoystick" aria-label="Snake movement joystick">   <div class="snake-joystick-knob" id="snakeJoystickKnob"></div> </div>
     </div>
   </section>
 
