@@ -737,3 +737,31 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
     pointer-events: none;
   }
 }
+/* YEAH DAWG — PEEKING OVER THE HILL */
+#yeahDawg {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 76px;
+  height: 75px;
+  transform: translateX(-50%) translateY(100%);
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  pointer-events: none;
+  transition: transform 0.35s ease-out;
+}
+
+#yeahDawg img {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#yeahDawg.peeking {
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
