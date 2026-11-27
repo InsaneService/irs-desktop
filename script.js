@@ -929,7 +929,7 @@ function loadRecycleFiles() {
     image.alt = "";
 
     const label = document.createElement("span");
-    label.textContent = file.type === "audio" ? "Cassette" : file.name;
+    label.textContent = file.type === "audio" ? "collectable tape 2" : file.name;
 
     button.append(image, label);
     button.addEventListener("click", () => openRecycleFile(file));
