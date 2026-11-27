@@ -456,7 +456,10 @@ return;
   }
   snake.unshift(head);
   if (head.x===food.x && head.y===food.y) {
-    score+=10; $("snakeScore").textContent=score; food=randomFood();
+    score+=10;
+$("snakeScore").textContent=score;
+checkRecycleUnlock();
+food=randomFood();
   } else snake.pop();
   drawSnake();
 }
@@ -742,3 +745,331 @@ document
     irsTvVideo.muted = true;
     irsTvVideoHost.appendChild(irsTvVideo);
   });
+/* SECRET SCREENSAVER + RECYCLE BIN */
+
+const SAVER_CASSETTE_KEY = "irs-screensaver-cassette-collected";
+const RECYCLE_UNLOCK_KEY = "irs-recycle-unlocked";
+const RECYCLE_COLLECTED_KEY = "irs-recycle-collected";
+
+let saverTimer;
+let saverFrame;
+let saverActive = false;
+let saverCornerHit = false;
+let saverX = 30;
+let saverY = 30;
+let saverVX = 3.2;
+let saverVY = 2.7;
+let lastSaverTime = 0;
+
+const saver = $("screensaver");
+const saverLogo = $("screensaverLogo");
+const saverConfetti = $("screensaverConfetti");
+
+function resetSaverTimer() {
+  clearTimeout(saverTimer);
+  if (!saverActive) saverTimer = setTimeout(startScreensaver, 60000);
+}
+
+function startScreensaver() {
+  if (saverActive) return;
+  saverActive = true;
+  saverCornerHit = false;
+  saver.hidden = false;
+  saverX = 30;
+  saverY = 30;
+  saverVX = 3.2;
+  saverVY = 2.7;
+  lastSaverTime = 0;
+  saverFrame = requestAnimationFrame(moveSaverLogo);
+}
+
+function stopScreensaver() {
+  if (!saverActive) return;
+  saverActive = false;
+  cancelAnimationFrame(saverFrame);
+  saver.hidden = true;
+  saverConfetti.innerHTML = "";
+
+  if (saverCornerHit &&
+      localStorage.getItem(SAVER_CASSETTE_KEY) !== "yes") {
+    $("screenCassette").hidden = false;
+  }
+  resetSaverTimer();
+}
+
+function makeConfetti() {
+  for (let i = 0; i < 100; i++) {
+    const piece = document.createElement("i");
+    piece.className = "confetti-piece";
+    piece.style.left = "50%";
+    piece.style.top = "50%";
+    piece.style.background = `hsl(${Math.random() * 360},90%,60%)`;
+    piece.style.setProperty("--dx", `${(Math.random() - .5) * innerWidth}px`);
+    piece.style.setProperty("--dy", `${(Math.random() - .5) * innerHeight}px`);
+    saverConfetti.append(piece);
+  }
+}
+
+function moveSaverLogo(time) {
+  if (!saverActive) return;
+
+  const width = saver.clientWidth;
+  const height = saver.clientHeight;
+  const logoWidth = saverLogo.offsetWidth || 150;
+  const logoHeight = saverLogo.offsetHeight || 110;
+  const maxX = Math.max(0, width - logoWidth);
+  const maxY = Math.max(0, height - logoHeight);
+
+  const elapsed = lastSaverTime ? Math.min((time - lastSaverTime) / 16.67, 2) : 1;
+  lastSaverTime = time;
+
+  saverX += saverVX * elapsed;
+  saverY += saverVY * elapsed;
+
+  let hitX = false;
+  let hitY = false;
+
+  if (saverX <= 0 || saverX >= maxX) {
+    saverX = Math.max(0, Math.min(maxX, saverX));
+    saverVX *= -1;
+    hitX = true;
+  }
+  if (saverY <= 0 || saverY >= maxY) {
+    saverY = Math.max(0, Math.min(maxY, saverY));
+    saverVY *= -1;
+    hitY = true;
+  }
+
+  if (hitX && hitY && !saverCornerHit) {
+    saverCornerHit = true;
+    makeConfetti();
+    saverVX *= 1.08;
+    saverVY *= 1.08;
+  }
+
+  saverLogo.style.left = `${saverX}px`;
+  saverLogo.style.top = `${saverY}px`;
+  saverFrame = requestAnimationFrame(moveSaverLogo);
+}
+
+["pointerdown", "pointermove", "keydown", "touchstart"].forEach(eventName => {
+  document.addEventListener(eventName, () => {
+    if (saverActive) stopScreensaver();
+    else resetSaverTimer();
+  }, { passive: true });
+});
+
+$("screenCassette").addEventListener("click", () => {
+  $("screenCassette").hidden = true;
+  localStorage.setItem(SAVER_CASSETTE_KEY, "yes");
+  showWindow("playerWindow");
+  TRACKS.push({
+    title: "Spread Eagle",
+    artist: "Insane Revenue Service",
+    src: "assets/SpreadEagle.mp3"
+  });
+  loadTrack(TRACKS.length - 1, true);
+});
+
+if (localStorage.getItem(SAVER_CASSETTE_KEY) === "yes") {
+  $("screenCassette").hidden = true;
+}
+resetSaverTimer();
+
+
+/* RECYCLE BIN UNLOCK */
+
+function checkRecycleUnlock() {
+  if (Number(score) > 250) {
+    localStorage.setItem(RECYCLE_UNLOCK_KEY, "yes");
+    $("openRecycle").hidden = false;
+  }
+}
+
+if (localStorage.getItem(RECYCLE_UNLOCK_KEY) === "yes") {
+  $("openRecycle").hidden = false;
+}
+
+$("openRecycle").addEventListener("click", () => {
+  showWindow("recycleWindow");
+  loadRecycleFiles();
+  loadRecycleMessages();
+});
+
+
+/* RECYCLE BIN FILES */
+
+const RECYCLE_FILES = [
+  { name: "805a7a0a-84db-43a7-99b6-d4f4591037b7.JPG", type: "image" },
+  { name: "9e9863933bdc425e982649741af946a9.mov", type: "video" },
+  { name: "IMG_6441.mov", type: "video" },
+  { name: "Sanctuary I.mp3", type: "audio" }
+];
+
+function getCollectedFiles() {
+  try {
+    return JSON.parse(localStorage.getItem(RECYCLE_COLLECTED_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function loadRecycleFiles() {
+  const container = $("recycleFiles");
+  const collected = getCollectedFiles();
+  container.innerHTML = "";
+
+  RECYCLE_FILES.filter(file => !collected.includes(file.name)).forEach(file => {
+    const button = document.createElement("button");
+    button.className = "recycle-file";
+    button.type = "button";
+
+    const image = document.createElement("img");
+    image.src = file.type === "audio" ? "assets/cassette.png" : "assets/Document.png";
+    image.alt = "";
+
+    const label = document.createElement("span");
+    label.textContent = file.type === "audio" ? "Cassette" : file.name;
+
+    button.append(image, label);
+    button.addEventListener("click", () => openRecycleFile(file));
+    container.append(button);
+  });
+
+  if (!container.children.length) {
+    container.textContent = "NO FILES REMAIN.";
+  }
+}
+
+function openRecycleFile(file) {
+  if (file.type === "audio") {
+    collectRecycleAudio(file);
+    return;
+  }
+
+  const viewer = $("recycleViewer");
+  viewer.hidden = false;
+  viewer.innerHTML = "";
+
+  let media;
+  if (file.type === "image") {
+    media = document.createElement("img");
+  } else {
+    media = document.createElement("video");
+    media.controls = true;
+    media.playsInline = true;
+  }
+
+  media.src = `assets/recycle/${encodeURIComponent(file.name)}`;
+  viewer.append(media);
+
+  const close = document.createElement("button");
+  close.type = "button";
+  close.textContent = "CLOSE";
+  close.addEventListener("click", () => {
+    media.pause?.();
+    viewer.hidden = true;
+    viewer.innerHTML = "";
+  });
+  viewer.append(close);
+}
+
+function collectRecycleAudio(file) {
+  const collected = getCollectedFiles();
+  if (!collected.includes(file.name)) collected.push(file.name);
+  localStorage.setItem(RECYCLE_COLLECTED_KEY, JSON.stringify(collected));
+
+  TRACKS.push({
+    title: file.name.replace(/\.mp3$/i, ""),
+    artist: "RECOVERED FILE",
+    src: `assets/recycle/${encodeURIComponent(file.name)}`
+  });
+
+  loadRecycleFiles();
+  showWindow("playerWindow");
+  loadTrack(TRACKS.length - 1, true);
+}
+
+
+/* SHARED NOTEPAD MESSAGES — SUPABASE */
+
+const RECYCLE_MESSAGES_URL =
+  `${SUPABASE_URL}/rest/v1/recycle_bin_messages`;
+
+async function loadRecycleMessages() {
+  const list = $("recycleMessages");
+  list.textContent = "LOADING MESSAGES...";
+
+  try {
+    const response = await fetch(
+      `${RECYCLE_MESSAGES_URL}?select=author,message,created_at&order=created_at.desc&limit=50`,
+      { headers: { apikey: SUPABASE_KEY } }
+    );
+    if (!response.ok) throw new Error("Could not load messages");
+
+    const messages = await response.json();
+    list.innerHTML = "";
+
+    if (!messages.length) {
+      list.textContent = "NO MESSAGES YET.";
+      return;
+    }
+
+    messages.forEach(entry => {
+      const item = document.createElement("div");
+      item.className = "recycle-message";
+
+      const meta = document.createElement("small");
+      meta.textContent =
+        `${entry.author || "ANONYMOUS"} · ${new Date(entry.created_at).toLocaleString()}`;
+
+      const message = document.createElement("div");
+      message.textContent = entry.message;
+
+      item.append(meta, message);
+      list.append(item);
+    });
+  } catch (error) {
+    list.textContent = "MESSAGES UNAVAILABLE.";
+    console.error(error);
+  }
+}
+
+$("sendRecycleMessage").addEventListener("click", async () => {
+  const author = $("recycleAuthor").value.trim() || "ANONYMOUS";
+  const message = $("recycleMessage").value.trim();
+  const status = $("recycleMessageStatus");
+  const button = $("sendRecycleMessage");
+
+  if (!message || message.length > 500) {
+    status.textContent = "ENTER A MESSAGE (1–500 CHARACTERS).";
+    return;
+  }
+
+  button.disabled = true;
+  status.textContent = "SAVING...";
+
+  try {
+    const response = await fetch(RECYCLE_MESSAGES_URL, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({ author: author.slice(0, 30), message })
+    });
+
+    if (!response.ok) throw new Error(await response.text());
+
+    $("recycleMessage").value = "";
+    status.textContent = "MESSAGE SAVED.";
+    await loadRecycleMessages();
+  } catch (error) {
+    status.textContent = "COULD NOT SAVE MESSAGE.";
+    console.error(error);
+  } finally {
+    button.disabled = false;
+  }
+});
