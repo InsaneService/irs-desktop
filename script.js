@@ -1182,7 +1182,15 @@ function showYeahDawg() {
 
   yeahDawgActive = true;
   yeahDawg.hidden = false;
-  yeahDawg.classList.add("peeking");
+  yeahDawg.classList.remove("peeking");
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (yeahDawgActive && !yeahDawgCollected) {
+        yeahDawg.classList.add("peeking");
+      }
+    });
+  });
 
   yeahDawgTimer = setTimeout(() => {
     yeahDawg.classList.remove("peeking");
