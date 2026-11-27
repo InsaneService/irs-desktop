@@ -1171,6 +1171,7 @@ $("sendRecycleMessage").addEventListener("click", async () => {
 
 const yeahDawg = $("yeahDawg");
 const yeahDawgImage = $("yeahDawgImage");
+yeahDawg.hidden = true;
 
 let yeahDawgTimer;
 let yeahDawgActive = false;
