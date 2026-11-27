@@ -1201,7 +1201,7 @@ function showYeahDawg() {
 }
 
 function scheduleYeahDawg() {
-  setTimeout(showYeahDawg, 1 * 60 * 1000);
+  showYeahDawg();
 }
 
 yeahDawg.addEventListener("click", async () => {
