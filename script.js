@@ -388,6 +388,17 @@ async function submitSnakeScore() {
 }
 
 $("snakeSubmitScore").addEventListener("click", submitSnakeScore);
+
+const snakeLeaderboardWrap = $("snakeLeaderboardWrap");
+const snakeLeaderboardToggle = $("snakeLeaderboardToggle");
+
+snakeLeaderboardToggle.addEventListener("click", () => {
+  const expanded = snakeLeaderboardWrap.classList.toggle("is-open");
+  snakeLeaderboardToggle.setAttribute("aria-expanded", String(expanded));
+  snakeLeaderboardToggle.textContent = expanded
+    ? "WORLD HIGH SCORES ▴"
+    : "WORLD HIGH SCORES ▾";
+});
 $("snakePlayerName").addEventListener("keydown", event => {
   if (event.key === "Enter") submitSnakeScore();
 });
