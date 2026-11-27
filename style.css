@@ -52,7 +52,7 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
 .virus-overlay{position:absolute;inset:0;z-index:1900;background:rgba(0,0,0,.5);overflow:hidden}.virus-header{margin:8vh auto 10px;width:max-content;background:#800;color:white;padding:8px 18px;font:bold 22px "ms sans serif";border:3px outset #eee}.virus-copy{text-align:center;color:#fff;font:bold 14px "ms sans serif";text-shadow:2px 2px #000}.virus-popup{position:absolute;width:230px;background:#c0c0c0;border:3px outset #eee;box-shadow:3px 4px 0 #111;padding:3px;font:12px Tahoma}.virus-popup b{display:block;background:linear-gradient(90deg,#102e70,#4b78bd);color:#fff;padding:5px}.virus-popup p{padding:7px}.virus-popup button{display:block;margin:5px auto;border:2px outset #eee;background:#c0c0c0;padding:3px 16px;font-weight:bold;cursor:pointer}.virus-overlay>#virusReload{position:absolute;bottom:calc(var(--taskbar-h) + 15px);left:50%;transform:translateX(-50%);padding:10px 16px;border:3px outset #eee;background:#c0c0c0;font-weight:bold;z-index:3;white-space:nowrap;cursor:pointer}
 #trainLayer{position:absolute;inset:0;z-index:25;pointer-events:none;overflow:hidden;display:none}#trainLayer.active{display:block}#trainImage{position:absolute;width:min(34vw,360px);height:auto;left:50%;top:57%;transform:translate(-50%,-50%) scale(.12);opacity:0;filter:drop-shadow(0 7px 5px #3338)}
 @media(max-width:650px){
- :root{--taskbar-h:61px}#desktop{background-position:53% center}.desktop-heading{top:3.5%;padding:3px 8px}.desktop-title{font-size:clamp(13px,3.5vw,19px);letter-spacing:.3px}
+ :root{--taskbar-h:61px}#desktop{background-position:53% center}#desktop::after{background-position:53% center}.desktop-heading{top:3.5%;padding:3px 8px}.desktop-title{font-size:clamp(13px,3.5vw,19px);letter-spacing:.3px}
  .desktop-item{width:82px;min-height:90px}.desktop-item img{width:62px;height:58px}.item-label{font-size:10px}
  .music{left:5%;top:15%}.shows{left:38%;top:15%}.instagram{left:72%;top:15%}.john-shortcut{left:5%;top:39%}.ie-shortcut{left:39%;top:39%}.winamp-shortcut{left:72%;top:39%}.speed{left:5%;top:63%}.train-shortcut{left:39%;top:63%}.book{left:72%;top:63%}.virus-shortcut{left:5%;top:78%}
  .unknown-file{width:55px;height:55px;font-size:40px}
@@ -796,22 +796,17 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
 }
 
 
-/* Yeah Dawg foreground hill mask */
+/* Exact foreground hill mask, aligned with the desktop wallpaper */
 #desktop::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
-  background-image: inherit;
-  background-size: inherit;
-  background-position: inherit;
+  background-image: url("assets/bliss-wallpaper%20mask.png");
+  background-size: cover;
+  background-position: center center;
   background-repeat: no-repeat;
-  clip-path: polygon(
-    0 68%, 12% 70%, 25% 74%, 38% 78%,
-    50% 77%, 62% 69%, 72% 62%, 83% 61%,
-    92% 66%, 100% 72%, 100% 100%, 0 100%
-  );
 }
 
 /* Keep desktop shortcuts above the foreground mask */
@@ -819,8 +814,9 @@ input[type=range]{accent-color:#7d913e;width:100%;height:12px}.transport{display
   z-index: 4;
 }
 
-/* Place the dog at the hill line so the foreground covers its lower half */
+/* Centre Yeah Dawg, with the foreground mask covering the lower part */
 #yeahDawg {
-  top: 77%;
+  left: 50%;
+  top: 50%;
   z-index: 2;
 }
