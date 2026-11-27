@@ -117,7 +117,9 @@ function restoreDesktopPositions() {
   });
 }
 
-restoreDesktopPositions();
+if (!window.matchMedia("(max-width: 650px)").matches) {
+  restoreDesktopPositions();
+}
 
 function arrangeIconsAroundWindows() {
   const desktopRect = desktop.getBoundingClientRect();
