@@ -513,8 +513,11 @@ function resetSnakeJoystick() {
 
 function moveSnakeJoystick(event) {
   const rect = joystick.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const viewport = isIOS ? window.visualViewport : null;
+  const centerX = rect.left + rect.width / 2 + (viewport?.offsetLeft || 0);
+  const centerY = rect.top + rect.height / 2 + (viewport?.offsetTop || 0);
 
   const scaleX = rect.width / joystick.offsetWidth;
   const scaleY = rect.height / joystick.offsetHeight;
