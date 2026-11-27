@@ -496,9 +496,63 @@ $("snakePause").addEventListener("click", () => {
   $("snakeStatus").textContent=paused ? "PAUSED" : "PLAYING";
   drawSnake();
 });
-document.querySelectorAll("[data-dir]").forEach(b => {
-  b.addEventListener("click", () => setSnakeDirection(b.dataset.dir));
+const joystick = $("snakeJoystick");
+const joystickKnob = $("snakeJoystickKnob");
+let joystickPointer = null;
+
+function resetSnakeJoystick() {
+  joystickPointer = null;
+  joystickKnob.style.setProperty("--joy-x", "0px");
+  joystickKnob.style.setProperty("--joy-y", "0px");
+}
+
+function moveSnakeJoystick(event) {
+  const rect = joystick.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  let dx = event.clientX - centerX;
+  let dy = event.clientY - centerY;
+
+  const maxDistance = rect.width / 2 - joystickKnob.offsetWidth / 2 - 5;
+  const distance = Math.hypot(dx, dy);
+
+  if (distance > maxDistance) {
+    const ratio = maxDistance / distance;
+    dx *= ratio;
+    dy *= ratio;
+  }
+
+  joystickKnob.style.setProperty("--joy-x", `${dx}px`);
+  joystickKnob.style.setProperty("--joy-y", `${dy}px`);
+
+  if (distance < 10) return;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    setSnakeDirection(dx > 0 ? "right" : "left");
+  } else {
+    setSnakeDirection(dy > 0 ? "down" : "up");
+  }
+}
+
+joystick.addEventListener("pointerdown", event => {
+  event.preventDefault();
+  joystickPointer = event.pointerId;
+  joystick.setPointerCapture(event.pointerId);
+  moveSnakeJoystick(event);
 });
+
+joystick.addEventListener("pointermove", event => {
+  if (event.pointerId === joystickPointer) {
+    moveSnakeJoystick(event);
+  }
+});
+
+joystick.addEventListener("pointerup", event => {
+  if (event.pointerId === joystickPointer) resetSnakeJoystick();
+});
+
+joystick.addEventListener("pointercancel", resetSnakeJoystick);
 snake=[{x:8,y:7},{x:7,y:7},{x:6,y:7}];
 score=undefined; food={x:14,y:7}; drawSnake();
 
