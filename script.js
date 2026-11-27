@@ -1175,10 +1175,9 @@ yeahDawg.hidden = true;
 
 let yeahDawgTimer;
 let yeahDawgActive = false;
-let yeahDawgCollected = false;
 
 function showYeahDawg() {
-  if (yeahDawgActive || yeahDawgCollected) return;
+  if (yeahDawgActive) return;
 
   yeahDawgActive = true;
   yeahDawg.hidden = false;
@@ -1186,7 +1185,7 @@ function showYeahDawg() {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      if (yeahDawgActive && !yeahDawgCollected) {
+      if (yeahDawgActive) {
         yeahDawg.classList.add("peeking");
         yeahDawgTimer = setTimeout(hideYeahDawg, 5000);
       }
@@ -1200,20 +1199,23 @@ function hideYeahDawg() {
 
   // Let the slide-back finish before the next peek.
   yeahDawgTimer = setTimeout(() => {
-    if (!yeahDawgCollected) showYeahDawg();
+    showYeahDawg();
   }, 700);
 }
 
 function scheduleYeahDawg() {
-  showYeahDawg();
+  // Wait for the hill mask to load before revealing the dog.
+  const maskPreload = new Image();
+  maskPreload.onload = showYeahDawg;
+  maskPreload.onerror = showYeahDawg;
+  maskPreload.src = "assets/bliss-wallpaper mask.png";
 }
 
 yeahDawg.addEventListener("click", async () => {
-  if (!yeahDawgActive || yeahDawgCollected) return;
+  if (!yeahDawgActive) return;
 
   yeahDawgActive = false;
   clearTimeout(yeahDawgTimer);
-  yeahDawgCollected = true;
 
   const dogAudio = new Audio("assets/yeahdawg.mp3");
   dogAudio.play().catch(() => {});
@@ -1233,6 +1235,7 @@ yeahDawg.addEventListener("click", async () => {
 
   const tape = $("yeahDawgTape");
   tape.hidden = false;
+  yeahDawgTimer = setTimeout(showYeahDawg, 700);
 });
 
 scheduleYeahDawg();
