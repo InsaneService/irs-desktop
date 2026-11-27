@@ -1188,16 +1188,20 @@ function showYeahDawg() {
     requestAnimationFrame(() => {
       if (yeahDawgActive && !yeahDawgCollected) {
         yeahDawg.classList.add("peeking");
+        yeahDawgTimer = setTimeout(hideYeahDawg, 5000);
       }
     });
   });
+}
 
+function hideYeahDawg() {
+  yeahDawg.classList.remove("peeking");
+  yeahDawgActive = false;
+
+  // Let the slide-back finish before the next peek.
   yeahDawgTimer = setTimeout(() => {
-    yeahDawg.classList.remove("peeking");
-    yeahDawg.hidden = true;
-    yeahDawgActive = false;
-    scheduleYeahDawg();
-  }, 5000);
+    if (!yeahDawgCollected) showYeahDawg();
+  }, 700);
 }
 
 function scheduleYeahDawg() {
