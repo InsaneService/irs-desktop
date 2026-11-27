@@ -516,10 +516,12 @@ function moveSnakeJoystick(event) {
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
 
-  let dx = event.clientX - centerX;
-  let dy = event.clientY - centerY;
+  const scaleX = rect.width / joystick.offsetWidth;
+  const scaleY = rect.height / joystick.offsetHeight;
+  let dx = (event.clientX - centerX) / scaleX;
+  let dy = (event.clientY - centerY) / scaleY;
 
-  const maxDistance = rect.width / 2 - joystickKnob.offsetWidth / 2 - 5;
+  const maxDistance = joystick.offsetWidth / 2 - joystickKnob.offsetWidth / 2 - 5;
   const distance = Math.hypot(dx, dy);
 
   if (distance > maxDistance) {
