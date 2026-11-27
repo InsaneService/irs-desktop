@@ -1175,6 +1175,7 @@ yeahDawg.hidden = true;
 
 let yeahDawgTimer;
 let yeahDawgActive = false;
+const YEAH_DAWG_INTERVAL = 10 * 60 * 1000;
 
 function showYeahDawg() {
   if (yeahDawgActive) return;
@@ -1200,14 +1201,17 @@ function hideYeahDawg() {
   // Let the slide-back finish before the next peek.
   yeahDawgTimer = setTimeout(() => {
     showYeahDawg();
-  }, 700);
+  }, YEAH_DAWG_INTERVAL);
 }
 
 function scheduleYeahDawg() {
-  // Wait for the hill mask to load before revealing the dog.
+  // Wait for the hill mask to load, then show the dog after 10 minutes.
   const maskPreload = new Image();
-  maskPreload.onload = showYeahDawg;
-  maskPreload.onerror = showYeahDawg;
+  const scheduleFirstPeek = () => {
+    yeahDawgTimer = setTimeout(showYeahDawg, YEAH_DAWG_INTERVAL);
+  };
+  maskPreload.onload = scheduleFirstPeek;
+  maskPreload.onerror = scheduleFirstPeek;
   maskPreload.src = "assets/bliss-wallpaper mask.png";
 }
 
@@ -1235,7 +1239,7 @@ yeahDawg.addEventListener("click", async () => {
 
   const tape = $("yeahDawgTape");
   tape.hidden = false;
-  yeahDawgTimer = setTimeout(showYeahDawg, 700);
+  yeahDawgTimer = setTimeout(showYeahDawg, YEAH_DAWG_INTERVAL);
 });
 
 scheduleYeahDawg();
