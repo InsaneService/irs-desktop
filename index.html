@@ -148,11 +148,22 @@
   <span id="snakeSubmitStatus"></span>
 </div>
 
-<div id="snakeLeaderboard">
-  <strong>WORLD HIGH SCORES</strong>
-  <ol id="snakeLeaderboardList">
-    <li>LOADING...</li>
-  </ol>
+<div class="snake-leaderboard-wrap" id="snakeLeaderboardWrap">
+  <button
+    class="snake-leaderboard-toggle"
+    id="snakeLeaderboardToggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="snakeLeaderboardPanel"
+  >WORLD HIGH SCORES ▾</button>
+  <div class="snake-leaderboard-panel" id="snakeLeaderboardPanel">
+    <div id="snakeLeaderboard">
+      <strong>WORLD HIGH SCORES</strong>
+      <ol id="snakeLeaderboardList">
+        <li>LOADING...</li>
+      </ol>
+    </div>
+  </div>
 </div>
       <div class="touch-arrows"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div>
     </div>
