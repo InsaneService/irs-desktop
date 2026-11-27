@@ -1155,6 +1155,9 @@ getCollectedFiles().forEach(fileName => {
   }
 });
 
+// Refresh the visible Winamp playlist after restoring saved tracks.
+renderPlaylist();
+
 function collectRecycleAudio(file) {
   const collected = getCollectedFiles();
   if (!collected.includes(file.name)) collected.push(file.name);
