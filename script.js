@@ -265,6 +265,14 @@ const TRACKS = [
 const audio = $("audio");
 const playlist = $("playlist");
 let current = -1;
+
+function addRecoveredTrack(track) {
+  const existing = TRACKS.findIndex(item => item.src === track.src);
+  if (existing !== -1) return existing;
+  TRACKS.push(track);
+  return TRACKS.length - 1;
+}
+
 function formatTime(seconds) {
   if (!Number.isFinite(seconds)) return "00:00";
   return String(Math.floor(seconds/60)).padStart(2,"0") + ":" +
@@ -856,16 +864,11 @@ tape4.addEventListener("click", () => {
   tape4.hidden = true;
   localStorage.setItem(TAPE4_COLLECTED_KEY, "yes");
 
-  const trackSrc = "assets/Keep Your Eyes Off The Clock.mp3";
-  let trackIndex = TRACKS.findIndex(track => track.src === trackSrc);
-  if (trackIndex === -1) {
-    TRACKS.push({
-      title: "Keep Your Eyes Off The Clock",
-      artist: "Insane Revenue Service - RECOVERED FILE",
-      src: trackSrc
-    });
-    trackIndex = TRACKS.length - 1;
-  }
+  const trackIndex = addRecoveredTrack({
+    title: "Keep Your Eyes Off The Clock",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/Keep Your Eyes Off The Clock.mp3"
+  });
 
   showWindow("playerWindow");
   loadTrack(trackIndex, true);
@@ -993,27 +996,22 @@ $("screenCassette").addEventListener("click", () => {
   $("screenCassette").hidden = true;
   localStorage.setItem(SAVER_CASSETTE_KEY, "yes");
   showWindow("playerWindow");
-  TRACKS.push({
+  const trackIndex = addRecoveredTrack({
     title: "Spread Eagle",
     artist: "Insane Revenue Service - RECOVERED FILE",
     src: "assets/SpreadEagle.mp3"
   });
-  loadTrack(TRACKS.length - 1, true);
+  loadTrack(trackIndex, true);
 });
 
 $("yeahDawgTape").addEventListener("click", () => {
   $("yeahDawgTape").hidden = true;
-  const trackSrc = "assets/FISH ON.mp3";
-  let trackIndex = TRACKS.findIndex(track => track.src === trackSrc);
-
-  if (trackIndex === -1) {
-    TRACKS.push({
-      title: "FISH ON",
-      artist: "Insane Revenue Service - RECOVERED FILE",
-      src: trackSrc
-    });
-    trackIndex = TRACKS.length - 1;
-  }
+  localStorage.setItem("irs-collectable-tape-3-collected", "yes");
+  const trackIndex = addRecoveredTrack({
+    title: "FISH ON",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/FISH ON.mp3"
+  });
 
   showWindow("playerWindow");
   loadTrack(trackIndex, true);
@@ -1122,12 +1120,47 @@ function openRecycleFile(file) {
   viewer.append(close);
 }
 
+const TAPE3_COLLECTED_KEY = "irs-collectable-tape-3-collected";
+
+// Rebuild recovered tracks whenever the site opens.
+if (localStorage.getItem(SAVER_CASSETTE_KEY) === "yes") {
+  addRecoveredTrack({
+    title: "Spread Eagle",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/SpreadEagle.mp3"
+  });
+}
+if (localStorage.getItem(TAPE3_COLLECTED_KEY) === "yes") {
+  addRecoveredTrack({
+    title: "FISH ON",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/FISH ON.mp3"
+  });
+}
+if (localStorage.getItem(TAPE4_COLLECTED_KEY) === "yes") {
+  addRecoveredTrack({
+    title: "Keep Your Eyes Off The Clock",
+    artist: "Insane Revenue Service - RECOVERED FILE",
+    src: "assets/Keep Your Eyes Off The Clock.mp3"
+  });
+}
+getCollectedFiles().forEach(fileName => {
+  const file = RECYCLE_FILES.find(item => item.name === fileName && item.type === "audio");
+  if (file) {
+    addRecoveredTrack({
+      title: file.name.replace(/\.mp3$/i, ""),
+      artist: "Insane Revenue Service - RECOVERED FILE",
+      src: `assets/recycle/${encodeURIComponent(file.name)}`
+    });
+  }
+});
+
 function collectRecycleAudio(file) {
   const collected = getCollectedFiles();
   if (!collected.includes(file.name)) collected.push(file.name);
   localStorage.setItem(RECYCLE_COLLECTED_KEY, JSON.stringify(collected));
 
-  TRACKS.push({
+  const trackIndex = addRecoveredTrack({
     title: file.name.replace(/\.mp3$/i, ""),
     artist: "Insane Revenue Service - RECOVERED FILE",
     src: `assets/recycle/${encodeURIComponent(file.name)}`
@@ -1135,7 +1168,7 @@ function collectRecycleAudio(file) {
 
   loadRecycleFiles();
   showWindow("playerWindow");
-  loadTrack(TRACKS.length - 1, true);
+  loadTrack(trackIndex, true);
 }
 
 
