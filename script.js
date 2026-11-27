@@ -58,7 +58,10 @@ document.querySelectorAll(".window").forEach(win => {
     if (e.target.closest("button")) return;
     const r = win.getBoundingClientRect();
     const d = desktop.getBoundingClientRect();
-    win.style.transform = "none";
+    const scaledSnake = win.id === "snakeWindow" &&
+      window.matchMedia("(max-width: 650px)").matches;
+    win.style.transform = scaledSnake ? "scale(0.85)" : "none";
+    win.style.transformOrigin = scaledSnake ? "top left" : "";
     win.style.left = (r.left - d.left) + "px";
     win.style.top = (r.top - d.top) + "px";
     drag = { x:e.clientX, y:e.clientY, left:parseFloat(win.style.left), top:parseFloat(win.style.top) };
