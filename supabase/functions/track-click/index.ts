@@ -1,10 +1,17 @@
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://insaneservice.github.io",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const allowedOrigins = new Set([
+  "https://insanerevenueservice.github.io",
+  "https://insaneservice.github.io",
+]);
 
 Deno.serve(async (request) => {
+  const origin = request.headers.get("Origin") || "";
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": allowedOrigins.has(origin) ? origin : "null",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
