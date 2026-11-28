@@ -325,6 +325,36 @@ let running = false, paused = false;
 // Shared Snake 97 leaderboard
 const SUPABASE_URL = "https://wyygbaxkwqjuloywnxns.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8iKzf4qBwlOCemlWt3H7uA_ucIFxN0Y";
+
+/* PRIVACY-FRIENDLY CLICK COUNTS
+   Stores aggregate counts per element only: no visitor IDs, IPs, URLs,
+   timestamps, referrers, form values, or device details are sent. */
+const CLICK_ANALYTICS_RPC = `${SUPABASE_URL}/rest/v1/rpc/track_element_click`;
+
+document.addEventListener("click", event => {
+  const target = event.target instanceof Element ? event.target : null;
+  const element = target?.closest(
+    'button, a, [role="button"], input[type="button"], input[type="submit"], input[type="range"], summary, .desktop-item'
+  );
+  if (!element || element.closest("[data-analytics-ignore]")) return;
+
+  const name = element.dataset.analyticsName ||
+    element.id ||
+    [element.tagName.toLowerCase(), ...Array.from(element.classList).slice(0, 2)].join(".");
+  if (!name || name.length > 120) return;
+
+  fetch(CLICK_ANALYTICS_RPC, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ p_element: name }),
+    keepalive: true
+  }).catch(() => {});
+}, true);
+
 const LEADERBOARD_URL = `${SUPABASE_URL}/rest/v1/snake_leaderboard`;
 
 async function loadSnakeLeaderboard() {
