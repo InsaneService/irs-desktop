@@ -27,11 +27,17 @@ Deno.serve(async (request) => {
     }
 
     // Use the visitor IP only for a one-time country lookup. Never persist or log it.
+    // Supabase's Cloudflare gateway may provide the country directly.
+    const headerCountry = (request.headers.get("cf-ipcountry") || "").trim().toUpperCase();
+    let country = /^[A-Z]{2}$/.test(headerCountry) && headerCountry !== "XX"
+      ? headerCountry
+      : null;
+
+    // Fall back to an IP-based lookup only when the country header is unavailable.
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = (forwarded || request.headers.get("x-real-ip") || "").split(",")[0].trim();
-    let country = null;
 
-    if (ip) {
+    if (!country && ip) {
       try {
         const geoResponse = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/country/`, {
           signal: AbortSignal.timeout(2500),
