@@ -26,31 +26,12 @@ Deno.serve(async (request) => {
       return new Response("Invalid element", { status: 400, headers: corsHeaders });
     }
 
-    // Use the visitor IP only for a one-time country lookup. Never persist or log it.
-    // Supabase's Cloudflare gateway may provide the country directly.
+    // Country is recorded only when Supabase supplies Cloudflare's country header.
+    // No IP address is read, looked up, or stored.
     const headerCountry = (request.headers.get("cf-ipcountry") || "").trim().toUpperCase();
-    let country = /^[A-Z]{2}$/.test(headerCountry) && headerCountry !== "XX"
+    const country = /^[A-Z]{2}$/.test(headerCountry) && headerCountry !== "XX"
       ? headerCountry
       : null;
-
-    // Fall back to an IP-based lookup only when the country header is unavailable.
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = (forwarded || request.headers.get("x-real-ip") || "").split(",")[0].trim();
-
-    if (!country && ip) {
-      try {
-        const geoResponse = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/country/`, {
-          signal: AbortSignal.timeout(2500),
-          headers: { "User-Agent": "IRSDesktopClickAnalytics/1.0" },
-        });
-        if (geoResponse.ok) {
-          const candidate = (await geoResponse.text()).trim().toUpperCase();
-          if (/^[A-Z]{2}$/.test(candidate)) country = candidate;
-        }
-      } catch {
-        // Country is optional; still record the click if lookup fails.
-      }
-    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
