@@ -1,4 +1,4 @@
--- Run this once in Supabase SQL Editor.
+-- Run this in the Supabase SQL Editor.
 -- Stores aggregate click counts only. No individual click events or visitor data.
 
 create table if not exists public.element_click_counts (
@@ -27,18 +27,8 @@ begin
 end;
 $$;
 
-create or replace function public.get_element_click_counts()
-returns table (element_name text, click_count bigint)
-language sql
-security definer
-set search_path = ''
-as $$
-  select c.element_name, c.click_count
-  from public.element_click_counts as c
-  order by c.click_count desc, c.element_name asc;
-$$;
-
 revoke all on function public.track_element_click(text) from public;
-revoke all on function public.get_element_click_counts() from public;
 grant execute on function public.track_element_click(text) to anon, authenticated;
-grant execute on function public.get_element_click_counts() to anon, authenticated;
+
+-- Remove the public read endpoint from the earlier dashboard setup.
+drop function if exists public.get_element_click_counts();
