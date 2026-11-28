@@ -326,10 +326,10 @@ let running = false, paused = false;
 const SUPABASE_URL = "https://wyygbaxkwqjuloywnxns.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8iKzf4qBwlOCemlWt3H7uA_ucIFxN0Y";
 
-/* PRIVACY-FRIENDLY CLICK COUNTS
-   Stores aggregate counts per element only: no visitor IDs, IPs, URLs,
-   timestamps, referrers, form values, or device details are sent. */
-const CLICK_ANALYTICS_RPC = `${SUPABASE_URL}/rest/v1/rpc/track_element_click`;
+/* PRIVACY-FRIENDLY CLICK ANALYTICS
+   Stores element name, click time, and country code only.
+   Visitor IP is used transiently for country lookup and is never stored. */
+const CLICK_ANALYTICS_URL = `${SUPABASE_URL}/functions/v1/track-click`;
 
 document.addEventListener("click", event => {
   const target = event.target instanceof Element ? event.target : null;
@@ -343,14 +343,14 @@ document.addEventListener("click", event => {
     [element.tagName.toLowerCase(), ...Array.from(element.classList).slice(0, 2)].join(".");
   if (!name || name.length > 120) return;
 
-  fetch(CLICK_ANALYTICS_RPC, {
+  fetch(CLICK_ANALYTICS_URL, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ p_element: name }),
+    body: JSON.stringify({ element: name }),
     keepalive: true
   }).catch(() => {});
 }, true);
