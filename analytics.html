@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IRS — Click Counts</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#008080;font:14px Tahoma,Arial,sans-serif;color:#111}
+main{max-width:760px;margin:6vh auto;background:#c0c0c0;border:3px outset #eee;padding:4px;box-shadow:4px 5px #222}
+header{background:linear-gradient(90deg,#102e70,#4b78bd);color:white;padding:9px 12px;font-weight:bold}
+section{padding:18px}.note{font-size:12px;line-height:1.5;margin:0 0 14px}
+button{background:#c0c0c0;border:2px outset #eee;padding:8px 14px;font-weight:bold;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:14px;background:#fff}
+th,td{text-align:left;padding:9px;border:1px solid #999}th{background:#ddd}
+td:last-child,th:last-child{text-align:right;width:110px;font-variant-numeric:tabular-nums}
+.status{margin-top:12px;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+<header>INSANE REVENUE SERVICE — ELEMENT CLICK COUNTS</header>
+<section>
+<p class="note">Aggregate interaction counts only. This dashboard shows which interface elements are clicked and how often. The site does not send visitor identities, IP addresses, form contents, or browsing histories to this dataset.</p>
+<button id="refresh" type="button">REFRESH COUNTS</button>
+<div class="status" id="status">LOADING...</div>
+<table>
+<thead><tr><th>ELEMENT</th><th>CLICKS</th></tr></thead>
+<tbody id="counts"><tr><td colspan="2">Loading…</td></tr></tbody>
+</table>
+</section>
+</main>
+<script>
+const SUPABASE_URL="https://wyygbaxkwqjuloywnxns.supabase.co";
+const SUPABASE_KEY="sb_publishable_8iKzf4qBwlOCemlWt3H7uA_ucIFxN0Y";
+async function refresh(){
+ const status=document.getElementById("status"), body=document.getElementById("counts");
+ status.textContent="LOADING...";
+ try{
+  const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_element_click_counts",{
+   method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:"{}"
+  });
+  if(!response.ok)throw new Error("Analytics table is not set up yet.");
+  const rows=await response.json();body.replaceChildren();
+  if(!rows.length){body.innerHTML='<tr><td colspan="2">No clicks recorded yet.</td></tr>';}
+  rows.forEach(row=>{const tr=document.createElement("tr"),name=document.createElement("td"),count=document.createElement("td");name.textContent=row.element_name;count.textContent=Number(row.click_count).toLocaleString();tr.append(name,count);body.append(tr);});
+  status.textContent="UPDATED JUST NOW";
+ }catch(error){status.textContent=error.message+" Run analytics.sql in your Supabase SQL Editor first.";body.innerHTML='<tr><td colspan="2">Counts unavailable.</td></tr>';}
+}
+document.getElementById("refresh").addEventListener("click",refresh);refresh();
+</script>
+</body>
+</html>
